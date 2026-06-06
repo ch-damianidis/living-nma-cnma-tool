@@ -156,10 +156,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Ranking</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./live-demo.html"> 
-<span class="menu-text">Live Demo</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./interactive-node-merging.html"> 
 <span class="menu-text">Interactive Mode</span></a>
   </li>  
@@ -218,7 +214,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">load_pairwise_data</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>This Quarto website is a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original app logic has been decomposed into reusable R functions and rendered as an analysis website suitable for GitHub Pages.</p>
+<p>This website is an extension of my MSc thesis, developed using Quarto and Quarto Live.</p>
+<p>It provides a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original application logic has been decomposed into reusable R functions and rendered as an analysis website suitable for deployment through GitHub Pages.</p>
+<p>In addition to the static analysis outputs, the website includes an interactive browser-side node-merging module powered by webR/WebAssembly, allowing users to explore selected sensitivity scenarios directly in the browser.</p>
+<p>Last but not least, the developed application should be viewed as a methodological and technical blueprint rather than a production-ready Living NMA platform. Its purpose is to demonstrate how a reproducible Living Network Meta-Analysis workflow can be structured, documented, and partially explored through a static Quarto website with selected browser-side interactivity.</p>
 <section id="project-aim" class="level2">
 <h2 class="anchored" data-anchor-id="project-aim">Project aim</h2>
 <p>The aim is to provide a transparent workflow for:</p>
@@ -741,28 +740,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">load_pairwise_data</span>()</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>This Quarto website is a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original app logic has been decomposed into reusable R functions and rendered as an analysis website suitable for GitHub Pages.</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>This website is an extension of my MSc thesis, developed using Quarto and Quarto Live.</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## Project aim</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>It provides a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original application logic has been decomposed into reusable R functions and rendered as an analysis website suitable for deployment through GitHub Pages.</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>The aim is to provide a transparent workflow for:</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>In addition to the static analysis outputs, the website includes an interactive browser-side node-merging module powered by webR/WebAssembly, allowing users to explore selected sensitivity scenarios directly in the browser.</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>preparing pairwise study-level data,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>fitting frequentist Network Meta-Analysis models with <span class="in">`netmeta`</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exploring treatment networks,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>presenting league tables and ranking,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>documenting inconsistency checks,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>demonstrating node-merging sensitivity analysis.</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Current dataset snapshot</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">summarise_pairwise_data</span>(dat))</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>Last but not least, the developed application should be viewed as a methodological and technical blueprint rather than a production-ready Living NMA platform. Its purpose is to demonstrate how a reproducible Living Network Meta-Analysis workflow can be structured, documented, and partially explored through a static Quarto website with selected browser-side interactivity. </span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Project aim</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>The aim is to provide a transparent workflow for:</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>preparing pairwise study-level data,</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>fitting frequentist Network Meta-Analysis models with <span class="in">`netmeta`</span>,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>exploring treatment networks,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>presenting league tables and ranking,</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>documenting inconsistency checks,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>demonstrating node-merging sensitivity analysis.</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="fu">## Current dataset snapshot</span></span>
 <span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommended architecture</span></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>The full Shiny app should remain the interactive/server-oriented version. This Quarto version should be used as the reproducible thesis website and GitHub Pages output. Browser-side live modules can be added gradually after confirming that <span class="in">`netmeta`</span> works reliably in webR.</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">summarise_pairwise_data</span>(dat))</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Recommended architecture</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>The full Shiny app should remain the interactive/server-oriented version. This Quarto version should be used as the reproducible thesis website and GitHub Pages output. Browser-side live modules can be added gradually after confirming that <span class="in">`netmeta`</span> works reliably in webR.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

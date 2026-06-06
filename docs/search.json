@@ -60,7 +60,7 @@
     "href": "limitations.html#what-should-remain-in-shiny-or-a-server-backed-app",
     "title": "Limitations and Next Steps",
     "section": "What should remain in Shiny or a server-backed app",
-    "text": "What should remain in Shiny or a server-backed app\n\nUser uploads.\nPersistent version history.\nREDCap connection.\nSaving user-specific analysis states.\nFull app-like workflow with sessions and database storage."
+    "text": "What should remain in Shiny or a server-backed app\n\nUser uploads.\nPersistent version history.\nSaving user-specific analysis states.\nFull app-like workflow with sessions and database storage."
   },
   {
     "objectID": "limitations.html#main-technical-risk",
@@ -74,7 +74,7 @@
     "href": "index.html",
     "title": "Living Network Meta-Analysis Tool",
     "section": "",
-    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()\nThis Quarto website is a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original app logic has been decomposed into reusable R functions and rendered as an analysis website suitable for GitHub Pages."
+    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()\nThis website is an extension of my MSc thesis, developed using Quarto and Quarto Live.\nIt provides a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original application logic has been decomposed into reusable R functions and rendered as an analysis website suitable for deployment through GitHub Pages.\nIn addition to the static analysis outputs, the website includes an interactive browser-side node-merging module powered by webR/WebAssembly, allowing users to explore selected sensitivity scenarios directly in the browser.\nLast but not least, the developed application should be viewed as a methodological and technical blueprint rather than a production-ready Living NMA platform. Its purpose is to demonstrate how a reproducible Living Network Meta-Analysis workflow can be structured, documented, and partially explored through a static Quarto website with selected browser-side interactivity."
   },
   {
     "objectID": "index.html#project-aim",

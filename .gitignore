@@ -7,3 +7,4 @@ renv/library/
 renv/staging/
 .DS_Store
 Thumbs.db
+/.quarto/

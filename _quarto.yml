@@ -22,8 +22,6 @@ website:
         text: Inconsistency
       - href: ranking.qmd
         text: Ranking
-      - href: live-demo.qmd
-        text: Live Demo
       - href: interactive-node-merging.qmd
         text: Interactive Mode
       - href: limitations.qmd

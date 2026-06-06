@@ -14,7 +14,6 @@ title: "Limitations and Next Steps"
 
 - User uploads.
 - Persistent version history.
-- REDCap connection.
 - Saving user-specific analysis states.
 - Full app-like workflow with sessions and database storage.
 

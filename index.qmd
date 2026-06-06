@@ -7,7 +7,13 @@ source("R/nma_functions.R")
 dat <- load_pairwise_data()
 ```
 
-This Quarto website is a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original app logic has been decomposed into reusable R functions and rendered as an analysis website suitable for GitHub Pages.
+This website is an extension of my MSc thesis, developed using Quarto and Quarto Live.
+
+It provides a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original application logic has been decomposed into reusable R functions and rendered as an analysis website suitable for deployment through GitHub Pages.
+
+In addition to the static analysis outputs, the website includes an interactive browser-side node-merging module powered by webR/WebAssembly, allowing users to explore selected sensitivity scenarios directly in the browser.
+
+Last but not least, the developed application should be viewed as a methodological and technical blueprint rather than a production-ready Living NMA platform. Its purpose is to demonstrate how a reproducible Living Network Meta-Analysis workflow can be structured, documented, and partially explored through a static Quarto website with selected browser-side interactivity. 
 
 ## Project aim
 
