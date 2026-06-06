@@ -1,0 +1,31 @@
+---
+title: "Living Network Meta-Analysis Tool"
+---
+
+```{r}
+source("R/nma_functions.R")
+dat <- load_pairwise_data()
+```
+
+This Quarto website is a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original app logic has been decomposed into reusable R functions and rendered as an analysis website suitable for GitHub Pages.
+
+## Project aim
+
+The aim is to provide a transparent workflow for:
+
+- preparing pairwise study-level data,
+- fitting frequentist Network Meta-Analysis models with `netmeta`,
+- exploring treatment networks,
+- presenting league tables and ranking,
+- documenting inconsistency checks,
+- demonstrating node-merging sensitivity analysis.
+
+## Current dataset snapshot
+
+```{r}
+knitr::kable(summarise_pairwise_data(dat))
+```
+
+## Recommended architecture
+
+The full Shiny app should remain the interactive/server-oriented version. This Quarto version should be used as the reproducible thesis website and GitHub Pages output. Browser-side live modules can be added gradually after confirming that `netmeta` works reliably in webR.

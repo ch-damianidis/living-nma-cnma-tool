@@ -1,0 +1,53 @@
+---
+title: "Node Merging"
+---
+
+```{r}
+source("R/nma_functions.R")
+source("R/node_merging.R")
+dat <- load_pairwise_data()
+```
+
+Node merging is implemented by replacing selected treatment components inside labels such as `I + R` or `Clb + O`, then pooling duplicate comparisons within the same study using inverse-variance weights.
+
+## Available components
+
+```{r}
+knitr::kable(data.frame(component = extract_components(dat)))
+```
+
+## Example scenario
+
+The example below merges the components `I` and `Ibr` into a common node named `BTKi`.
+
+```{r}
+merged_dat <- merge_components(
+  dat,
+  components = c("I", "Ibr"),
+  new_name = "BTKi",
+  stop_on_self_loop = TRUE
+)
+
+knitr::kable(merged_dat)
+```
+
+## Re-run NMA after merging
+
+```{r fig.height=7, fig.width=9}
+nm_merged <- run_model(merged_dat, model_type = "simple", effect_model = "random")
+netmeta::netgraph(
+  nm_merged,
+  number.of.studies = TRUE,
+  thickness = "number.of.studies",
+  multiarm = TRUE,
+  points = TRUE,
+  cex.points = 4,
+  cex = 0.8,
+  plastic = FALSE,
+  seq = sort(nm_merged$trts)
+)
+```
+
+```{r}
+summary(nm_merged, backtransf = TRUE)
+```

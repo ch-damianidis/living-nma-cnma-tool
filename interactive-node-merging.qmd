@@ -1,0 +1,466 @@
+---
+title: "Interactive Node Merging"
+engine: knitr
+format: live-html
+execute:
+  echo: false
+  message: false
+  warning: false
+webr:
+  packages:
+    - dplyr
+    - netmeta
+    - meta
+    - igraph
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+
+This page provides a **browser-side node-merging module** for the example CLL network. The user selects the treatment components to merge, gives the merged node a new name, chooses the CNMA model, and presses **Run node merging**. The code is hidden from the user; only the controls, network plot, and results are shown.
+
+> The first execution may take some time because R and the required packages are loaded in the browser through WebAssembly. This module does not save user choices or create permanent analysis versions.
+
+## Select components to merge
+
+```{ojs}
+//| echo: false
+
+components_all = [
+  "Acal", "BR", "Clb", "FCR", "I", "Ibr", "O", "R", "Ven", "Zanubrutinib"
+]
+
+viewof components_to_merge = Inputs.checkbox(
+  components_all,
+  {
+    value: ["Acal", "Zanubrutinib"],
+    label: "Components to merge"
+  }
+)
+
+viewof new_node_name = Inputs.text({
+  value: "SecondGenBTKi",
+  label: "New merged component name"
+})
+
+viewof cnma_model = Inputs.radio(
+  ["Additive", "Additive + Interaction"],
+  {
+    value: "Additive",
+    label: "CNMA model"
+  }
+)
+
+viewof run_analysis = Inputs.button("Run node merging")
+```
+
+## Validation rules
+
+| Rule | Behaviour |
+|---|---|
+| Fewer than 2 components selected | Stop |
+| Empty merged node name | Stop |
+| Merged node name identical to one of the selected components | Stop |
+| Self-comparison created, e.g. `A vs A` | Stop |
+| A study becomes single-arm/non-comparative | Stop |
+| Fewer than 3 treatment nodes remain | Stop |
+| Network becomes disconnected | Warning, but the analysis is allowed to continue |
+| Duplicate comparisons are created within the same study | Pool using inverse-variance weights |
+
+## Network plot after merging
+
+```{webr}
+#| echo: false
+#| warning: false
+#| message: false
+#| input:
+#|   - components_to_merge
+#|   - new_node_name
+#|   - cnma_model
+#|   - run_analysis
+
+library(dplyr)
+library(netmeta)
+library(igraph)
+
+dat <- data.frame(
+  study = c("study 1", "study 2", "study 3", "study 4", "study 5",
+            "study 6", "study 7", "study 8", "study 9", "study 10",
+            "study 11", "study 12", "study 13", "study 14", "study 15"),
+  treat1 = c("BR", "FCR", "FCR", "FCR", "Clb + O",
+             "Clb + O", "Clb + O", "Clb", "Clb + O", "Clb + O",
+             "BR", "FCR + BR", "FCR + BR", "FCR + BR", "Clb + O"),
+  treat2 = c("I", "I + R", "I + R", "Ibr + Ven", "Ibr + Ven",
+             "Ven + O", "Ibr + O", "I", "Acal + O", "Acal",
+             "Zanubrutinib", "Ven + O", "Ven + O + Ibr", "Ven + R", "BR"),
+  logHR = c(-1.021, -0.994, -0.82, -1.139, -1.31,
+            -1.171, -1.386, -1.872, -1.967, -1.427,
+            -1.238, -0.755, -1.204, -0.357, -0.6),
+  selogHR = c(0.181, 0.162, 0.16, 0.238, 0.195,
+              0.179, 0.227, 0.181, 0.177, 0.161,
+              0.164, 0.193, 0.231, 0.082, 0.2)
+)
+
+replace_components_in_label <- function(lbl, components, new_name) {
+  parts <- trimws(unlist(strsplit(as.character(lbl), "\\s*\\+\\s*")))
+  parts[parts %in% components] <- new_name
+  parts <- unique(parts)
+  paste(parts, collapse = " + ")
+}
+
+merge_components <- function(dat, components, new_name) {
+  components <- trimws(components)
+  new_name <- trimws(new_name)
+
+  if (length(components) < 2) {
+    stop("Invalid merge: select at least two components.")
+  }
+
+  if (!nzchar(new_name)) {
+    stop("Invalid merge: provide a non-empty merged node name.")
+  }
+
+  if (new_name %in% components) {
+    stop("Invalid merge: the new node name must be different from the components being merged.")
+  }
+
+  d <- dat |>
+    mutate(
+      treat1_new = vapply(
+        treat1,
+        replace_components_in_label,
+        FUN.VALUE = character(1),
+        components = components,
+        new_name = new_name
+      ),
+      treat2_new = vapply(
+        treat2,
+        replace_components_in_label,
+        FUN.VALUE = character(1),
+        components = components,
+        new_name = new_name
+      )
+    )
+
+  if (any(d$treat1_new == d$treat2_new)) {
+    bad_studies <- unique(d$study[d$treat1_new == d$treat2_new])
+    stop(
+      paste0(
+        "Invalid merge: self-comparison created in ",
+        paste(bad_studies, collapse = ", "),
+        ". This would create a treatment compared with itself."
+      )
+    )
+  }
+
+  df_trts <- bind_rows(
+    d |> select(study, trt = treat1_new),
+    d |> select(study, trt = treat2_new)
+  )
+
+  single_arm_tbl <- df_trts |>
+    group_by(study) |>
+    summarise(n_unique_trts = n_distinct(trt), .groups = "drop") |>
+    filter(n_unique_trts <= 1)
+
+  if (nrow(single_arm_tbl) > 0) {
+    stop(
+      paste0(
+        "Invalid merge: after merging, the following studies become single-arm or non-comparative: ",
+        paste(single_arm_tbl$study, collapse = ", "),
+        ". Please choose a different component set."
+      )
+    )
+  }
+
+  pooled <- d |>
+    transmute(
+      study,
+      t1c = pmin(treat1_new, treat2_new),
+      t2c = pmax(treat1_new, treat2_new),
+      TEc = ifelse(treat1_new <= treat2_new, logHR, -logHR),
+      w = 1 / (selogHR^2)
+    ) |>
+    group_by(study, t1c, t2c) |>
+    summarise(
+      logHR = sum(w * TEc) / sum(w),
+      selogHR = sqrt(1 / sum(w)),
+      .groups = "drop"
+    ) |>
+    rename(treat1 = t1c, treat2 = t2c)
+
+  if (nrow(pooled) == 0) {
+    stop("Invalid merge: no valid pairwise comparisons remain after merging.")
+  }
+
+  all_nodes <- unique(c(pooled$treat1, pooled$treat2))
+
+  if (length(all_nodes) < 3) {
+    stop("Invalid merge: fewer than three treatment nodes remain. NMA is not meaningful.")
+  }
+
+  g <- igraph::graph_from_data_frame(
+    pooled[, c("treat1", "treat2")],
+    directed = FALSE
+  )
+
+  list(
+    data = pooled,
+    graph = g,
+    connected = igraph::is.connected(g)
+  )
+}
+
+res <- merge_components(dat, components_to_merge, new_node_name)
+merged_dat <- res$data
+
+cat("Selected CNMA model:", cnma_model, "\n")
+cat("Selected components:", paste(components_to_merge, collapse = ", "), "\n")
+cat("New merged component:", new_node_name, "\n\n")
+
+if (!res$connected) {
+  cat("Warning: the merged network is disconnected. Showing igraph network plot instead of netmeta::netgraph().\n")
+
+  plot(
+    res$graph,
+    vertex.label.cex = 0.85,
+    vertex.size = 24,
+    edge.width = 2,
+    main = "Disconnected merged network"
+  )
+
+} else {
+  net_merged <- netmeta(
+    TE = logHR,
+    seTE = selogHR,
+    treat1 = treat1,
+    treat2 = treat2,
+    studlab = study,
+    data = merged_dat,
+    sm = "HR",
+    random = TRUE,
+    common = FALSE,
+    reference.group = "Clb + O"
+  )
+
+  netgraph(
+    net_merged,
+    plastic = FALSE,
+    number.of.studies = FALSE,
+    cex = 0.8
+  )
+}
+```
+
+## NMA summary after merging
+
+```{webr}
+#| echo: false
+#| warning: false
+#| message: false
+#| input:
+#|   - components_to_merge
+#|   - new_node_name
+#|   - cnma_model
+#|   - run_analysis
+
+library(dplyr)
+library(netmeta)
+library(igraph)
+
+dat <- data.frame(
+  study = c("study 1", "study 2", "study 3", "study 4", "study 5",
+            "study 6", "study 7", "study 8", "study 9", "study 10",
+            "study 11", "study 12", "study 13", "study 14", "study 15"),
+  treat1 = c("BR", "FCR", "FCR", "FCR", "Clb + O",
+             "Clb + O", "Clb + O", "Clb", "Clb + O", "Clb + O",
+             "BR", "FCR + BR", "FCR + BR", "FCR + BR", "Clb + O"),
+  treat2 = c("I", "I + R", "I + R", "Ibr + Ven", "Ibr + Ven",
+             "Ven + O", "Ibr + O", "I", "Acal + O", "Acal",
+             "Zanubrutinib", "Ven + O", "Ven + O + Ibr", "Ven + R", "BR"),
+  logHR = c(-1.021, -0.994, -0.82, -1.139, -1.31,
+            -1.171, -1.386, -1.872, -1.967, -1.427,
+            -1.238, -0.755, -1.204, -0.357, -0.6),
+  selogHR = c(0.181, 0.162, 0.16, 0.238, 0.195,
+              0.179, 0.227, 0.181, 0.177, 0.161,
+              0.164, 0.193, 0.231, 0.082, 0.2)
+)
+
+replace_components_in_label <- function(lbl, components, new_name) {
+  parts <- trimws(unlist(strsplit(as.character(lbl), "\\s*\\+\\s*")))
+  parts[parts %in% components] <- new_name
+  parts <- unique(parts)
+  paste(parts, collapse = " + ")
+}
+
+merge_components <- function(dat, components, new_name) {
+  components <- trimws(components)
+  new_name <- trimws(new_name)
+
+  if (length(components) < 2) {
+    stop("Invalid merge: select at least two components.")
+  }
+
+  if (!nzchar(new_name)) {
+    stop("Invalid merge: provide a non-empty merged node name.")
+  }
+
+  if (new_name %in% components) {
+    stop("Invalid merge: the new node name must be different from the components being merged.")
+  }
+
+  d <- dat |>
+    mutate(
+      treat1_new = vapply(
+        treat1,
+        replace_components_in_label,
+        FUN.VALUE = character(1),
+        components = components,
+        new_name = new_name
+      ),
+      treat2_new = vapply(
+        treat2,
+        replace_components_in_label,
+        FUN.VALUE = character(1),
+        components = components,
+        new_name = new_name
+      )
+    )
+
+  if (any(d$treat1_new == d$treat2_new)) {
+    bad_studies <- unique(d$study[d$treat1_new == d$treat2_new])
+    stop(
+      paste0(
+        "Invalid merge: self-comparison created in ",
+        paste(bad_studies, collapse = ", "),
+        ". This would create a treatment compared with itself."
+      )
+    )
+  }
+
+  df_trts <- bind_rows(
+    d |> select(study, trt = treat1_new),
+    d |> select(study, trt = treat2_new)
+  )
+
+  single_arm_tbl <- df_trts |>
+    group_by(study) |>
+    summarise(n_unique_trts = n_distinct(trt), .groups = "drop") |>
+    filter(n_unique_trts <= 1)
+
+  if (nrow(single_arm_tbl) > 0) {
+    stop(
+      paste0(
+        "Invalid merge: after merging, the following studies become single-arm or non-comparative: ",
+        paste(single_arm_tbl$study, collapse = ", "),
+        ". Please choose a different component set."
+      )
+    )
+  }
+
+  pooled <- d |>
+    transmute(
+      study,
+      t1c = pmin(treat1_new, treat2_new),
+      t2c = pmax(treat1_new, treat2_new),
+      TEc = ifelse(treat1_new <= treat2_new, logHR, -logHR),
+      w = 1 / (selogHR^2)
+    ) |>
+    group_by(study, t1c, t2c) |>
+    summarise(
+      logHR = sum(w * TEc) / sum(w),
+      selogHR = sqrt(1 / sum(w)),
+      .groups = "drop"
+    ) |>
+    rename(treat1 = t1c, treat2 = t2c)
+
+  if (nrow(pooled) == 0) {
+    stop("Invalid merge: no valid pairwise comparisons remain after merging.")
+  }
+
+  all_nodes <- unique(c(pooled$treat1, pooled$treat2))
+
+  if (length(all_nodes) < 3) {
+    stop("Invalid merge: fewer than three treatment nodes remain. NMA is not meaningful.")
+  }
+
+  g <- igraph::graph_from_data_frame(
+    pooled[, c("treat1", "treat2")],
+    directed = FALSE
+  )
+
+  list(
+    data = pooled,
+    graph = g,
+    connected = igraph::is.connected(g)
+  )
+}
+
+res <- merge_components(dat, components_to_merge, new_node_name)
+merged_dat <- res$data
+
+cat("Merged pairwise dataset:\n")
+print(merged_dat)
+
+if (!res$connected) {
+  cat("\nThe merged network is disconnected.\n")
+  cat("The CNMA/NMA summary is not estimated for the full network in this browser-side module.\n")
+  cat("Use the igraph plot above to inspect the disconnected components.\n")
+
+} else {
+  net_merged <- netmeta(
+    TE = logHR,
+    seTE = selogHR,
+    treat1 = treat1,
+    treat2 = treat2,
+    studlab = study,
+    data = merged_dat,
+    sm = "HR",
+    random = TRUE,
+    common = FALSE,
+    reference.group = "Clb + O"
+  )
+
+  cat("\nCNMA model selected:", cnma_model, "\n\n")
+
+  if (cnma_model == "Additive") {
+    cat("Additive CNMA model:\n\n")
+
+    cnma_fit <- tryCatch(
+      netcomb(net_merged),
+      error = function(e) e
+    )
+
+    if (inherits(cnma_fit, "error")) {
+      cat("Additive CNMA could not be estimated in this browser-side module.\n")
+      cat("Error message:\n")
+      cat(cnma_fit$message, "\n\n")
+      cat("Fallback: standard NMA summary after merging:\n\n")
+      print(summary(net_merged))
+    } else {
+      print(summary(cnma_fit))
+    }
+
+  } else {
+    cat("Additive + Interaction CNMA model:\n\n")
+
+    interaction_fit <- tryCatch({
+      Cmat <- createC(net_merged)
+      netcomb(net_merged, C.matrix = Cmat)
+    }, error = function(e) e)
+
+    if (inherits(interaction_fit, "error")) {
+      cat("Additive + Interaction CNMA could not be estimated in this browser-side module.\n")
+      cat("Error message:\n")
+      cat(interaction_fit$message, "\n\n")
+      cat("Fallback: standard NMA summary after merging:\n\n")
+      print(summary(net_merged))
+    } else {
+      print(summary(interaction_fit))
+    }
+  }
+}
+```
+
+## Notes for thesis interpretation
+
+This is a **client-side sensitivity module**. It allows users to perform controlled node merging on the embedded example dataset, but it does not save choices to a database and does not create a permanent version history. For a full Living NMA platform with uploaded datasets, persistent versions, and user sessions, the Shiny/server version remains the correct production architecture.

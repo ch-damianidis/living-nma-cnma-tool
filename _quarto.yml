@@ -1,0 +1,42 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+
+website:
+  title: "Living Network Meta-Analysis Tool"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: methodology.qmd
+        text: Methodology
+      - href: data.qmd
+        text: Data
+      - href: analysis.qmd
+        text: Analysis
+      - href: node-merging.qmd
+        text: Node Merging
+      - href: inconsistency.qmd
+        text: Inconsistency
+      - href: ranking.qmd
+        text: Ranking
+      - href: live-demo.qmd
+        text: Live Demo
+      - href: interactive-node-merging.qmd
+        text: Interactive Mode
+      - href: limitations.qmd
+        text: Limitations
+
+format:
+  html:
+    theme: flatly
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    df-print: paged
+execute:
+  warning: false
+  message: false

@@ -1,0 +1,45 @@
+---
+title: "Network Meta-Analysis"
+---
+
+```{r}
+source("R/nma_functions.R")
+dat <- load_pairwise_data()
+nm_random <- run_model(dat, model_type = "simple", effect_model = "random")
+```
+
+## Network plot
+
+```{r fig.height=7, fig.width=9}
+netmeta::netgraph(
+  nm_random,
+  number.of.studies = TRUE,
+  thickness = "number.of.studies",
+  multiarm = TRUE,
+  points = TRUE,
+  cex.points = 4,
+  cex = 0.8,
+  plastic = FALSE,
+  seq = sort(nm_random$trts)
+)
+```
+
+## Model summary
+
+```{r}
+summary(nm_random, backtransf = TRUE)
+```
+
+## Forest plot
+
+```{r fig.height=7, fig.width=9}
+forest(nm_random, backtransf = TRUE)
+```
+
+## League table
+
+```{r}
+lt <- netmeta::netleague(nm_random, random = TRUE, common = FALSE, ci = TRUE,
+                         backtransf = TRUE, bracket = "(", separator = " - ")
+knitr::kable(as.data.frame(lt$random))
+```

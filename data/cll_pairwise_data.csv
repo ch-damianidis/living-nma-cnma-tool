@@ -1,0 +1,16 @@
+study,treat1,treat2,logHR,selogHR
+study 1,BR,I,-1.021,0.181
+study 2,FCR,I + R,-0.994,0.162
+study 3,FCR,I + R,-0.82,0.16
+study 4,FCR,Ibr + Ven,-1.139,0.238
+study 5,Clb + O,Ibr + Ven,-1.31,0.195
+study 6,Clb + O,Ven + O,-1.171,0.179
+study 7,Clb + O,Ibr + O,-1.386,0.227
+study 8,Clb,I,-1.872,0.181
+study 9,Clb + O,Acal + O,-1.967,0.177
+study 10,Clb + O,Acal,-1.427,0.161
+study 11,BR,Zanubrutinib,-1.238,0.164
+study 12,FCR + BR,Ven + O,-0.755,0.193
+study 13,FCR + BR,Ven + O + Ibr,-1.204,0.231
+study 14,FCR + BR,Ven + R,-0.357,0.082
+study 15,Clb + O,BR,-0.6,0.2

@@ -1,0 +1,35 @@
+---
+title: "Methodology"
+---
+
+The workflow uses a frequentist Network Meta-Analysis framework implemented through the `netmeta` R package.
+
+## Data structure
+
+The current pipeline expects pairwise contrast data with the following columns:
+
+```text
+study, treat1, treat2, logHR, selogHR
+```
+
+Here, `logHR` is the log hazard ratio and `selogHR` is its standard error.
+
+## Models
+
+The original Shiny app supports three analysis modes:
+
+1. Simple treatment-level NMA using `netmeta()`.
+2. Additive Component Network Meta-Analysis using `netcomb()` or `discomb()`.
+3. Interaction CNMA using a component interaction C-matrix when the network is connected.
+
+```{r}
+source("R/nma_functions.R")
+source("R/node_merging.R")
+dat <- load_pairwise_data()
+components <- extract_components(dat)
+knitr::kable(data.frame(components = components))
+```
+
+## Connectivity logic
+
+For CNMA, the app checks whether the treatment network is connected using `igraph`. If the network is connected, `netcomb()` is used. If it is disconnected, `discomb()` is used. Interaction CNMA is only attempted on connected networks.

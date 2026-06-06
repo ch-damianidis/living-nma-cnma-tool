@@ -1,0 +1,105 @@
+---
+title: "Inconsistency"
+---
+
+```{r}
+source("R/nma_functions.R")
+dat <- load_pairwise_data()
+nm <- run_model(dat, model_type = "simple", effect_model = "random")
+```
+
+## Local inconsistency: node-splitting
+
+```{r}
+ns <- tryCatch(
+  netmeta::netsplit(
+    nm,
+    random = TRUE,
+    common = FALSE,
+    backtransf = TRUE
+  ),
+  error = identity
+)
+
+if (inherits(ns, "error")) {
+  cat("Node-splitting failed:", conditionMessage(ns))
+} else {
+
+  dir <- ns$direct.random[, c("comparison", "TE", "lower", "upper", "p")]
+  ind <- ns$indirect.random[, c("comparison", "TE", "lower", "upper", "p")]
+  cmp <- ns$compare.random[, c("comparison", "z", "p")]
+
+  res <- merge(
+    dir,
+    ind,
+    by = "comparison",
+    all = TRUE,
+    suffixes = c(".direct", ".indirect")
+  )
+
+  res <- merge(
+    res,
+    cmp,
+    by = "comparison",
+    all = TRUE
+  )
+
+  res$Q <- res$z^2
+  res$df <- 1L
+
+  names(res)[names(res) == "TE.direct"] <- "Direct"
+  names(res)[names(res) == "TE.indirect"] <- "Indirect"
+  names(res)[names(res) == "p.x"] <- "p.direct"
+  names(res)[names(res) == "p.y"] <- "p.indirect"
+  names(res)[names(res) == "p"] <- "p.diff"
+
+  out <- res[, c(
+    "comparison",
+    "Direct",
+    "Indirect",
+    "lower.direct",
+    "upper.direct",
+    "lower.indirect",
+    "upper.indirect",
+    "z",
+    "Q",
+    "df",
+    "p.diff"
+  )]
+
+  numcols <- c(
+    "Direct",
+    "Indirect",
+    "lower.direct",
+    "upper.direct",
+    "lower.indirect",
+    "upper.indirect",
+    "z",
+    "Q",
+    "p.diff"
+  )
+
+  out[numcols] <- lapply(
+    out[numcols],
+    function(x) if (is.numeric(x)) round(x, 3) else x
+  )
+
+  out <- out[order(out$comparison), ]
+
+  knitr::kable(
+    out,
+    caption = "Node-splitting results: direct, indirect, and direct-versus-indirect evidence"
+  )
+}
+```
+
+## Global inconsistency: design-by-treatment decomposition
+
+```{r}
+dec <- tryCatch(netmeta::decomp.design(nm), error = identity)
+if (inherits(dec, "error")) {
+  cat("Design-by-treatment decomposition failed:", conditionMessage(dec))
+} else {
+  knitr::kable(round(dec$Q.decomp, 3))
+}
+```

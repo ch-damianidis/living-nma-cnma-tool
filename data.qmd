@@ -1,0 +1,27 @@
+---
+title: "Data"
+---
+
+```{r}
+source("R/nma_functions.R")
+dat <- load_pairwise_data()
+```
+
+## Data preview
+
+```{r}
+DT::datatable(dat, options = list(pageLength = 10, scrollX = TRUE))
+```
+
+## Data summary
+
+```{r}
+knitr::kable(summarise_pairwise_data(dat))
+```
+
+## Treatment nodes
+
+```{r}
+treatments <- sort(unique(c(dat$treat1, dat$treat2)))
+knitr::kable(data.frame(Treatment = treatments))
+```

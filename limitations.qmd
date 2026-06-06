@@ -1,0 +1,23 @@
+---
+title: "Limitations and Next Steps"
+---
+
+## What this Quarto version supports
+
+- Static reproducible analysis.
+- GitHub Pages deployment.
+- Transparent R pipeline.
+- Precomputed network plots, summaries, ranking, inconsistency outputs.
+- Documented node-merging sensitivity scenarios.
+
+## What should remain in Shiny or a server-backed app
+
+- User uploads.
+- Persistent version history.
+- REDCap connection.
+- Saving user-specific analysis states.
+- Full app-like workflow with sessions and database storage.
+
+## Main technical risk
+
+The main uncertainty for browser-side execution is whether `netmeta`, its dependencies, and plotting functions run reliably inside `webR`/WebAssembly. Therefore, the initial Quarto version should be static and reproducible; live browser-side modules should be added only after a minimal `netmeta` proof of concept succeeds.

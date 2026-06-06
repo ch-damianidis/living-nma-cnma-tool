@@ -1,0 +1,268 @@
+[
+  {
+    "objectID": "ranking.html",
+    "href": "ranking.html",
+    "title": "Treatment Ranking",
+    "section": "",
+    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()\nnm &lt;- run_model(dat, model_type = \"simple\", effect_model = \"random\")"
+  },
+  {
+    "objectID": "ranking.html#p-score-ranking",
+    "href": "ranking.html#p-score-ranking",
+    "title": "Treatment Ranking",
+    "section": "P-score ranking",
+    "text": "P-score ranking\n\n\nCode\nranking &lt;- tryCatch(extract_ranking(nm, effect_model = \"random\"), error = identity)\nif (inherits(ranking, \"error\")) {\n  cat(\"Ranking failed:\", conditionMessage(ranking))\n} else {\n  knitr::kable(ranking)\n}\n\n\n\n\n\nTreatment\nP_score\n\n\n\n\nClb\n0.967\n\n\nClb + O\n0.919\n\n\nFCR\n0.857\n\n\nFCR + BR\n0.788\n\n\nBR\n0.712\n\n\nVen + R\n0.642\n\n\nI + R\n0.511\n\n\nVen + O\n0.472\n\n\nIbr + Ven\n0.384\n\n\nIbr + O\n0.343\n\n\nAcal\n0.316\n\n\nI\n0.219\n\n\nVen + O + Ibr\n0.216\n\n\nZanubrutinib\n0.103\n\n\nAcal + O\n0.051"
+  },
+  {
+    "objectID": "methodology.html",
+    "href": "methodology.html",
+    "title": "Methodology",
+    "section": "",
+    "text": "The workflow uses a frequentist Network Meta-Analysis framework implemented through the netmeta R package."
+  },
+  {
+    "objectID": "methodology.html#data-structure",
+    "href": "methodology.html#data-structure",
+    "title": "Methodology",
+    "section": "Data structure",
+    "text": "Data structure\nThe current pipeline expects pairwise contrast data with the following columns:\nstudy, treat1, treat2, logHR, selogHR\nHere, logHR is the log hazard ratio and selogHR is its standard error."
+  },
+  {
+    "objectID": "methodology.html#models",
+    "href": "methodology.html#models",
+    "title": "Methodology",
+    "section": "Models",
+    "text": "Models\nThe original Shiny app supports three analysis modes:\n\nSimple treatment-level NMA using netmeta().\nAdditive Component Network Meta-Analysis using netcomb() or discomb().\nInteraction CNMA using a component interaction C-matrix when the network is connected.\n\n\n\nCode\nsource(\"R/nma_functions.R\")\nsource(\"R/node_merging.R\")\ndat &lt;- load_pairwise_data()\ncomponents &lt;- extract_components(dat)\nknitr::kable(data.frame(components = components))\n\n\n\n\n\ncomponents\n\n\n\n\nAcal\n\n\nBR\n\n\nClb\n\n\nFCR\n\n\nI\n\n\nIbr\n\n\nO\n\n\nR\n\n\nVen\n\n\nZanubrutinib"
+  },
+  {
+    "objectID": "methodology.html#connectivity-logic",
+    "href": "methodology.html#connectivity-logic",
+    "title": "Methodology",
+    "section": "Connectivity logic",
+    "text": "Connectivity logic\nFor CNMA, the app checks whether the treatment network is connected using igraph. If the network is connected, netcomb() is used. If it is disconnected, discomb() is used. Interaction CNMA is only attempted on connected networks."
+  },
+  {
+    "objectID": "limitations.html",
+    "href": "limitations.html",
+    "title": "Limitations and Next Steps",
+    "section": "",
+    "text": "Static reproducible analysis.\nGitHub Pages deployment.\nTransparent R pipeline.\nPrecomputed network plots, summaries, ranking, inconsistency outputs.\nDocumented node-merging sensitivity scenarios."
+  },
+  {
+    "objectID": "limitations.html#what-this-quarto-version-supports",
+    "href": "limitations.html#what-this-quarto-version-supports",
+    "title": "Limitations and Next Steps",
+    "section": "",
+    "text": "Static reproducible analysis.\nGitHub Pages deployment.\nTransparent R pipeline.\nPrecomputed network plots, summaries, ranking, inconsistency outputs.\nDocumented node-merging sensitivity scenarios."
+  },
+  {
+    "objectID": "limitations.html#what-should-remain-in-shiny-or-a-server-backed-app",
+    "href": "limitations.html#what-should-remain-in-shiny-or-a-server-backed-app",
+    "title": "Limitations and Next Steps",
+    "section": "What should remain in Shiny or a server-backed app",
+    "text": "What should remain in Shiny or a server-backed app\n\nUser uploads.\nPersistent version history.\nREDCap connection.\nSaving user-specific analysis states.\nFull app-like workflow with sessions and database storage."
+  },
+  {
+    "objectID": "limitations.html#main-technical-risk",
+    "href": "limitations.html#main-technical-risk",
+    "title": "Limitations and Next Steps",
+    "section": "Main technical risk",
+    "text": "Main technical risk\nThe main uncertainty for browser-side execution is whether netmeta, its dependencies, and plotting functions run reliably inside webR/WebAssembly. Therefore, the initial Quarto version should be static and reproducible; live browser-side modules should be added only after a minimal netmeta proof of concept succeeds."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Living Network Meta-Analysis Tool",
+    "section": "",
+    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()\nThis Quarto website is a static, reproducible version of the original Shiny prototype for a Living Network Meta-Analysis workflow. The original app logic has been decomposed into reusable R functions and rendered as an analysis website suitable for GitHub Pages."
+  },
+  {
+    "objectID": "index.html#project-aim",
+    "href": "index.html#project-aim",
+    "title": "Living Network Meta-Analysis Tool",
+    "section": "Project aim",
+    "text": "Project aim\nThe aim is to provide a transparent workflow for:\n\npreparing pairwise study-level data,\nfitting frequentist Network Meta-Analysis models with netmeta,\nexploring treatment networks,\npresenting league tables and ranking,\ndocumenting inconsistency checks,\ndemonstrating node-merging sensitivity analysis."
+  },
+  {
+    "objectID": "index.html#current-dataset-snapshot",
+    "href": "index.html#current-dataset-snapshot",
+    "title": "Living Network Meta-Analysis Tool",
+    "section": "Current dataset snapshot",
+    "text": "Current dataset snapshot\n\n\nCode\nknitr::kable(summarise_pairwise_data(dat))\n\n\n\n\n\nmetric\nvalue\n\n\n\n\nStudies\n15\n\n\nPairwise rows\n15\n\n\nTreatments\n15\n\n\nNetwork connected\nTRUE\n\n\nMissing cells (%)\n0"
+  },
+  {
+    "objectID": "index.html#recommended-architecture",
+    "href": "index.html#recommended-architecture",
+    "title": "Living Network Meta-Analysis Tool",
+    "section": "Recommended architecture",
+    "text": "Recommended architecture\nThe full Shiny app should remain the interactive/server-oriented version. This Quarto version should be used as the reproducible thesis website and GitHub Pages output. Browser-side live modules can be added gradually after confirming that netmeta works reliably in webR."
+  },
+  {
+    "objectID": "data.html",
+    "href": "data.html",
+    "title": "Data",
+    "section": "",
+    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()"
+  },
+  {
+    "objectID": "data.html#data-preview",
+    "href": "data.html#data-preview",
+    "title": "Data",
+    "section": "Data preview",
+    "text": "Data preview\n\n\nCode\nDT::datatable(dat, options = list(pageLength = 10, scrollX = TRUE))"
+  },
+  {
+    "objectID": "data.html#data-summary",
+    "href": "data.html#data-summary",
+    "title": "Data",
+    "section": "Data summary",
+    "text": "Data summary\n\n\nCode\nknitr::kable(summarise_pairwise_data(dat))\n\n\n\n\n\nmetric\nvalue\n\n\n\n\nStudies\n15\n\n\nPairwise rows\n15\n\n\nTreatments\n15\n\n\nNetwork connected\nTRUE\n\n\nMissing cells (%)\n0"
+  },
+  {
+    "objectID": "data.html#treatment-nodes",
+    "href": "data.html#treatment-nodes",
+    "title": "Data",
+    "section": "Treatment nodes",
+    "text": "Treatment nodes\n\n\nCode\ntreatments &lt;- sort(unique(c(dat$treat1, dat$treat2)))\nknitr::kable(data.frame(Treatment = treatments))\n\n\n\n\n\nTreatment\n\n\n\n\nAcal\n\n\nAcal + O\n\n\nBR\n\n\nClb\n\n\nClb + O\n\n\nFCR\n\n\nFCR + BR\n\n\nI\n\n\nI + R\n\n\nIbr + O\n\n\nIbr + Ven\n\n\nVen + O\n\n\nVen + O + Ibr\n\n\nVen + R\n\n\nZanubrutinib"
+  },
+  {
+    "objectID": "analysis.html",
+    "href": "analysis.html",
+    "title": "Network Meta-Analysis",
+    "section": "",
+    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()\nnm_random &lt;- run_model(dat, model_type = \"simple\", effect_model = \"random\")"
+  },
+  {
+    "objectID": "analysis.html#network-plot",
+    "href": "analysis.html#network-plot",
+    "title": "Network Meta-Analysis",
+    "section": "Network plot",
+    "text": "Network plot\n\n\nCode\nnetmeta::netgraph(\n  nm_random,\n  number.of.studies = TRUE,\n  thickness = \"number.of.studies\",\n  multiarm = TRUE,\n  points = TRUE,\n  cex.points = 4,\n  cex = 0.8,\n  plastic = FALSE,\n  seq = sort(nm_random$trts)\n)"
+  },
+  {
+    "objectID": "analysis.html#model-summary",
+    "href": "analysis.html#model-summary",
+    "title": "Network Meta-Analysis",
+    "section": "Model summary",
+    "text": "Model summary\n\n\nCode\nsummary(nm_random, backtransf = TRUE)\n\n\nOriginal data:\n\n           treat1        treat2      TE   seTE\nstudy 1        BR             I -1.0210 0.1810\nstudy 2       FCR         I + R -0.9940 0.1620\nstudy 3       FCR         I + R -0.8200 0.1600\nstudy 4       FCR     Ibr + Ven -1.1390 0.2380\nstudy 5   Clb + O     Ibr + Ven -1.3100 0.1950\nstudy 6   Clb + O       Ven + O -1.1710 0.1790\nstudy 7   Clb + O       Ibr + O -1.3860 0.2270\nstudy 8       Clb             I -1.8720 0.1810\nstudy 9  Acal + O       Clb + O  1.9670 0.1770\nstudy 10     Acal       Clb + O  1.4270 0.1610\nstudy 11       BR  Zanubrutinib -1.2380 0.1640\nstudy 12 FCR + BR       Ven + O -0.7550 0.1930\nstudy 13 FCR + BR Ven + O + Ibr -1.2040 0.2310\nstudy 14 FCR + BR       Ven + R -0.3570 0.0820\nstudy 15       BR       Clb + O  0.6000 0.2000\n\nNumber of treatment arms (by study):\n         narms\nstudy 1      2\nstudy 2      2\nstudy 3      2\nstudy 4      2\nstudy 5      2\nstudy 6      2\nstudy 7      2\nstudy 8      2\nstudy 9      2\nstudy 10     2\nstudy 11     2\nstudy 12     2\nstudy 13     2\nstudy 14     2\nstudy 15     2\n\nResults (common effects model):\n\n           treat1        treat2     HR            95%-CI    Q leverage\nstudy 1        BR             I 0.3602 [0.2526;  0.5136] 0.00     1.00\nstudy 2       FCR         I + R 0.4042 [0.3233;  0.5052] 0.30     0.49\nstudy 3       FCR         I + R 0.4042 [0.3233;  0.5052] 0.29     0.51\nstudy 4       FCR     Ibr + Ven 0.3201 [0.2008;  0.5104] 0.00     1.00\nstudy 5   Clb + O     Ibr + Ven 0.2698 [0.1841;  0.3954] 0.00     1.00\nstudy 6   Clb + O       Ven + O 0.3101 [0.2183;  0.4404] 0.00     1.00\nstudy 7   Clb + O       Ibr + O 0.2501 [0.1603;  0.3902] 0.00     1.00\nstudy 8       Clb             I 0.1538 [0.1079;  0.2193] 0.00     1.00\nstudy 9  Acal + O       Clb + O 7.1492 [5.0535; 10.1139] 0.00     1.00\nstudy 10     Acal       Clb + O 4.1662 [3.0387;  5.7119] 0.00     1.00\nstudy 11       BR  Zanubrutinib 0.2900 [0.2103;  0.3999] 0.00     1.00\nstudy 12 FCR + BR       Ven + O 0.4700 [0.3220;  0.6861] 0.00     1.00\nstudy 13 FCR + BR Ven + O + Ibr 0.3000 [0.1908;  0.4718] 0.00     1.00\nstudy 14 FCR + BR       Ven + R 0.6998 [0.5959;  0.8218] 0.00     1.00\nstudy 15       BR       Clb + O 1.8221 [1.2312;  2.6966] 0.00     1.00\n\nResults (random effects model):\n\n           treat1        treat2     HR            95%-CI\nstudy 1        BR             I 0.3602 [0.2526;  0.5136]\nstudy 2       FCR         I + R 0.4042 [0.3233;  0.5052]\nstudy 3       FCR         I + R 0.4042 [0.3233;  0.5052]\nstudy 4       FCR     Ibr + Ven 0.3201 [0.2008;  0.5104]\nstudy 5   Clb + O     Ibr + Ven 0.2698 [0.1841;  0.3954]\nstudy 6   Clb + O       Ven + O 0.3101 [0.2183;  0.4404]\nstudy 7   Clb + O       Ibr + O 0.2501 [0.1603;  0.3902]\nstudy 8       Clb             I 0.1538 [0.1079;  0.2193]\nstudy 9  Acal + O       Clb + O 7.1492 [5.0535; 10.1139]\nstudy 10     Acal       Clb + O 4.1662 [3.0387;  5.7119]\nstudy 11       BR  Zanubrutinib 0.2900 [0.2103;  0.3999]\nstudy 12 FCR + BR       Ven + O 0.4700 [0.3220;  0.6861]\nstudy 13 FCR + BR Ven + O + Ibr 0.3000 [0.1908;  0.4718]\nstudy 14 FCR + BR       Ven + R 0.6998 [0.5959;  0.8218]\nstudy 15       BR       Clb + O 1.8221 [1.2312;  2.6966]\n\nNumber of studies: k = 15\nNumber of pairwise comparisons: m = 15\nNumber of treatments: n = 15\nNumber of designs: d = 14\n\nCommon effects model\n\nTreatment estimate (sm = 'HR', comparison: other treatments vs 'Acal'):\n                  HR           95%-CI     z  p-value\nAcal               .                .     .        .\nAcal + O      1.7160 [1.0736; 2.7427]  2.26   0.0240\nBR            0.4374 [0.2644; 0.7234] -3.22   0.0013\nClb           0.1867 [0.0918; 0.3801] -4.63 &lt; 0.0001\nClb + O       0.2400 [0.1751; 0.3291] -8.86 &lt; 0.0001\nFCR           0.2848 [0.1442; 0.5625] -3.62   0.0003\nFCR + BR      0.3639 [0.1987; 0.6662] -3.28   0.0011\nI             1.2141 [0.6559; 2.2472]  0.62   0.5369\nI + R         0.7046 [0.3443; 1.4422] -0.96   0.3381\nIbr + O       0.9598 [0.5563; 1.6561] -0.15   0.8829\nIbr + Ven     0.8896 [0.5419; 1.4603] -0.46   0.6436\nVen + O       0.7741 [0.4829; 1.2409] -1.06   0.2876\nVen + O + Ibr 1.2129 [0.5698; 2.5818]  0.50   0.6166\nVen + R       0.5200 [0.2781; 0.9722] -2.05   0.0405\nZanubrutinib  1.5083 [0.8302; 2.7404]  1.35   0.1773\n\nRandom effects model\n\nTreatment estimate (sm = 'HR', comparison: other treatments vs 'Acal'):\n                  HR           95%-CI     z  p-value\nAcal               .                .     .        .\nAcal + O      1.7160 [1.0736; 2.7427]  2.26   0.0240\nBR            0.4374 [0.2644; 0.7234] -3.22   0.0013\nClb           0.1867 [0.0918; 0.3801] -4.63 &lt; 0.0001\nClb + O       0.2400 [0.1751; 0.3291] -8.86 &lt; 0.0001\nFCR           0.2848 [0.1442; 0.5625] -3.62   0.0003\nFCR + BR      0.3639 [0.1987; 0.6662] -3.28   0.0011\nI             1.2141 [0.6559; 2.2472]  0.62   0.5369\nI + R         0.7046 [0.3443; 1.4422] -0.96   0.3381\nIbr + O       0.9598 [0.5563; 1.6561] -0.15   0.8829\nIbr + Ven     0.8896 [0.5419; 1.4603] -0.46   0.6436\nVen + O       0.7741 [0.4829; 1.2409] -1.06   0.2876\nVen + O + Ibr 1.2129 [0.5698; 2.5818]  0.50   0.6166\nVen + R       0.5200 [0.2781; 0.9722] -2.05   0.0405\nZanubrutinib  1.5083 [0.8302; 2.7404]  1.35   0.1773\n\nQuantifying heterogeneity / inconsistency:\ntau^2 = 0; tau = 0; I^2 = 0%\n\nTests of heterogeneity (within designs) and inconsistency (between designs):\n                   Q d.f. p-value\nTotal           0.58    1  0.4448\nWithin designs  0.58    1  0.4448\nBetween designs 0.00    0      --\n\nDetails of network meta-analysis methods:\n- Frequentist graph-theoretical approach\n- DerSimonian-Laird estimator for tau^2\n- Calculation of I^2 based on Q"
+  },
+  {
+    "objectID": "analysis.html#forest-plot",
+    "href": "analysis.html#forest-plot",
+    "title": "Network Meta-Analysis",
+    "section": "Forest plot",
+    "text": "Forest plot\n\n\nCode\nforest(nm_random, backtransf = TRUE)"
+  },
+  {
+    "objectID": "analysis.html#league-table",
+    "href": "analysis.html#league-table",
+    "title": "Network Meta-Analysis",
+    "section": "League table",
+    "text": "League table\n\n\nCode\nlt &lt;- netmeta::netleague(nm_random, random = TRUE, common = FALSE, ci = TRUE,\n                         backtransf = TRUE, bracket = \"(\", separator = \" - \")\nknitr::kable(as.data.frame(lt$random))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAcal\nAcal + O\nBR\nClb\nClb + O\nFCR\nFCR + BR\nI\nI + R\nIbr + O\nIbr + Ven\nVen + O\nVen + O + Ibr\nVen + R\nZanubrutinib\n\n\n\n\nAcal\nAcal\n.\n.\n.\n4.1662 (3.0387 - 5.7119)\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n\n\nAcal + O\n0.5827 (0.3646 - 0.9314)\nAcal + O\n.\n.\n7.1492 (5.0535 - 10.1139)\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n\n\nBR\n2.2864 (1.3823 - 3.7819)\n3.9236 (2.3246 - 6.6224)\nBR\n.\n1.8221 (1.2312 - 2.6966)\n.\n.\n0.3602 (0.2526 - 0.5136)\n.\n.\n.\n.\n.\n.\n0.2900 (0.2103 - 0.3999)\n\n\nClb\n5.3548 (2.6311 - 10.8981)\n9.1889 (4.4502 - 18.9738)\n2.3420 (1.4181 - 3.8678)\nClb\n.\n.\n.\n0.1538 (0.1079 - 0.2193)\n.\n.\n.\n.\n.\n.\n.\n\n\nClb + O\n4.1662 (3.0387 - 5.7119)\n7.1492 (5.0535 - 10.1139)\n1.8221 (1.2312 - 2.6966)\n0.7780 (0.4116 - 1.4706)\nClb + O\n.\n.\n.\n.\n0.2501 (0.1603 - 0.3902)\n0.2698 (0.1841 - 0.3954)\n0.3101 (0.2183 - 0.4404)\n.\n.\n.\n\n\nFCR\n3.5113 (1.7778 - 6.9353)\n6.0255 (3.0050 - 12.0820)\n1.5357 (0.7481 - 3.1527)\n0.6557 (0.2728 - 1.5761)\n0.8428 (0.4611 - 1.5404)\nFCR\n.\n.\n0.4042 (0.3233 - 0.5052)\n.\n0.3201 (0.2008 - 0.5104)\n.\n.\n.\n.\n\n\nFCR + BR\n2.7483 (1.5011 - 5.0318)\n4.7162 (2.5327 - 8.7821)\n1.2020 (0.6288 - 2.2978)\n0.5132 (0.2262 - 1.1647)\n0.6597 (0.3938 - 1.1051)\n0.7827 (0.3539 - 1.7309)\nFCR + BR\n.\n.\n.\n.\n0.4700 (0.3220 - 0.6861)\n0.3000 (0.1908 - 0.4718)\n0.6998 (0.5959 - 0.8218)\n.\n\n\nI\n0.8237 (0.4450 - 1.5245)\n1.4134 (0.7510 - 2.6600)\n0.3602 (0.2526 - 0.5136)\n0.1538 (0.1079 - 0.2193)\n0.1977 (0.1165 - 0.3354)\n0.2346 (0.1052 - 0.5231)\n0.2997 (0.1432 - 0.6273)\nI\n.\n.\n.\n.\n.\n.\n.\n\n\nI + R\n1.4192 (0.6934 - 2.9047)\n2.4353 (1.1729 - 5.0566)\n0.6207 (0.2923 - 1.3180)\n0.2650 (0.1072 - 0.6551)\n0.3406 (0.1791 - 0.6480)\n0.4042 (0.3233 - 0.5052)\n0.5164 (0.2264 - 1.1776)\n1.7230 (0.7495 - 3.9611)\nI + R\n.\n.\n.\n.\n.\n.\n\n\nIbr + O\n1.0419 (0.6038 - 1.7976)\n1.7878 (1.0170 - 3.1430)\n0.4557 (0.2518 - 0.8245)\n0.1946 (0.0895 - 0.4230)\n0.2501 (0.1603 - 0.3902)\n0.2967 (0.1402 - 0.6278)\n0.3791 (0.1918 - 0.7492)\n1.2649 (0.6338 - 2.5243)\n0.7341 (0.3359 - 1.6045)\nIbr + O\n.\n.\n.\n.\n.\n\n\nIbr + Ven\n1.1241 (0.6848 - 1.8453)\n1.9290 (1.1512 - 3.2322)\n0.4916 (0.2844 - 0.8500)\n0.2099 (0.0999 - 0.4411)\n0.2698 (0.1841 - 0.3954)\n0.3201 (0.2008 - 0.5104)\n0.4090 (0.2152 - 0.7773)\n1.3648 (0.7108 - 2.6205)\n0.7921 (0.4723 - 1.3284)\n1.0790 (0.6002 - 1.9397)\nIbr + Ven\n.\n.\n.\n.\n\n\nVen + O\n1.2918 (0.8058 - 2.0707)\n2.2167 (1.3534 - 3.6306)\n0.5650 (0.3339 - 0.9561)\n0.2412 (0.1166 - 0.4990)\n0.3101 (0.2183 - 0.4404)\n0.3679 (0.1831 - 0.7391)\n0.4700 (0.3220 - 0.6861)\n1.5683 (0.8315 - 2.9580)\n0.9102 (0.4375 - 1.8935)\n1.2399 (0.7036 - 2.1850)\n1.1491 (0.6840 - 1.9305)\nVen + O\n.\n.\n.\n\n\nVen + O + Ibr\n0.8245 (0.3873 - 1.7550)\n1.4148 (0.6557 - 3.0529)\n0.3606 (0.1636 - 0.7949)\n0.1540 (0.0604 - 0.3927)\n0.1979 (0.0996 - 0.3931)\n0.2348 (0.0942 - 0.5855)\n0.3000 (0.1908 - 0.4718)\n1.0010 (0.4209 - 2.3807)\n0.5810 (0.2268 - 1.4880)\n0.7914 (0.3492 - 1.7932)\n0.7334 (0.3343 - 1.6090)\n0.6383 (0.3538 - 1.1514)\nVen + O + Ibr\n.\n.\n\n\nVen + R\n1.9232 (1.0286 - 3.5958)\n3.3003 (1.7365 - 6.2723)\n0.8411 (0.4315 - 1.6398)\n0.3592 (0.1558 - 0.8279)\n0.4616 (0.2689 - 0.7925)\n0.5477 (0.2437 - 1.2309)\n0.6998 (0.5959 - 0.8218)\n2.3350 (1.0964 - 4.9728)\n1.3552 (0.5851 - 3.1388)\n1.8460 (0.9167 - 3.7172)\n1.7109 (0.8826 - 3.3164)\n1.4888 (0.9871 - 2.2457)\n2.3326 (1.4428 - 3.7713)\nVen + R\n.\n\n\nZanubrutinib\n0.6630 (0.3649 - 1.2046)\n1.1377 (0.6155 - 2.1028)\n0.2900 (0.2103 - 0.3999)\n0.1238 (0.0682 - 0.2247)\n0.1591 (0.0959 - 0.2642)\n0.1888 (0.0859 - 0.4151)\n0.2412 (0.1170 - 0.4972)\n0.8049 (0.4987 - 1.2992)\n0.4672 (0.2060 - 1.0594)\n0.6364 (0.3242 - 1.2492)\n0.5898 (0.3126 - 1.1128)\n0.5132 (0.2771 - 0.9507)\n0.8041 (0.3426 - 1.8876)\n0.3447 (0.1643 - 0.7232)\nZanubrutinib"
+  },
+  {
+    "objectID": "inconsistency.html",
+    "href": "inconsistency.html",
+    "title": "Inconsistency",
+    "section": "",
+    "text": "Code\nsource(\"R/nma_functions.R\")\ndat &lt;- load_pairwise_data()\nnm &lt;- run_model(dat, model_type = \"simple\", effect_model = \"random\")"
+  },
+  {
+    "objectID": "inconsistency.html#local-inconsistency-node-splitting",
+    "href": "inconsistency.html#local-inconsistency-node-splitting",
+    "title": "Inconsistency",
+    "section": "Local inconsistency: node-splitting",
+    "text": "Local inconsistency: node-splitting\n\n\nCode\nns &lt;- tryCatch(\n  netmeta::netsplit(\n    nm,\n    random = TRUE,\n    common = FALSE,\n    backtransf = TRUE\n  ),\n  error = identity\n)\n\nif (inherits(ns, \"error\")) {\n  cat(\"Node-splitting failed:\", conditionMessage(ns))\n} else {\n\n  dir &lt;- ns$direct.random[, c(\"comparison\", \"TE\", \"lower\", \"upper\", \"p\")]\n  ind &lt;- ns$indirect.random[, c(\"comparison\", \"TE\", \"lower\", \"upper\", \"p\")]\n  cmp &lt;- ns$compare.random[, c(\"comparison\", \"z\", \"p\")]\n\n  res &lt;- merge(\n    dir,\n    ind,\n    by = \"comparison\",\n    all = TRUE,\n    suffixes = c(\".direct\", \".indirect\")\n  )\n\n  res &lt;- merge(\n    res,\n    cmp,\n    by = \"comparison\",\n    all = TRUE\n  )\n\n  res$Q &lt;- res$z^2\n  res$df &lt;- 1L\n\n  names(res)[names(res) == \"TE.direct\"] &lt;- \"Direct\"\n  names(res)[names(res) == \"TE.indirect\"] &lt;- \"Indirect\"\n  names(res)[names(res) == \"p.x\"] &lt;- \"p.direct\"\n  names(res)[names(res) == \"p.y\"] &lt;- \"p.indirect\"\n  names(res)[names(res) == \"p\"] &lt;- \"p.diff\"\n\n  out &lt;- res[, c(\n    \"comparison\",\n    \"Direct\",\n    \"Indirect\",\n    \"lower.direct\",\n    \"upper.direct\",\n    \"lower.indirect\",\n    \"upper.indirect\",\n    \"z\",\n    \"Q\",\n    \"df\",\n    \"p.diff\"\n  )]\n\n  numcols &lt;- c(\n    \"Direct\",\n    \"Indirect\",\n    \"lower.direct\",\n    \"upper.direct\",\n    \"lower.indirect\",\n    \"upper.indirect\",\n    \"z\",\n    \"Q\",\n    \"p.diff\"\n  )\n\n  out[numcols] &lt;- lapply(\n    out[numcols],\n    function(x) if (is.numeric(x)) round(x, 3) else x\n  )\n\n  out &lt;- out[order(out$comparison), ]\n\n  knitr::kable(\n    out,\n    caption = \"Node-splitting results: direct, indirect, and direct-versus-indirect evidence\"\n  )\n}\n\n\n\nNode-splitting results: direct, indirect, and direct-versus-indirect evidence\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ncomparison\nDirect\nIndirect\nlower.direct\nupper.direct\nlower.indirect\nupper.indirect\nz\nQ\ndf\np.diff\n\n\n\n\nAcal + O:Acal\nNA\n0.540\nNA\nNA\n0.071\n1.009\nNA\nNA\n1\nNA\n\n\nAcal + O:BR\nNA\n1.367\nNA\nNA\n0.844\n1.890\nNA\nNA\n1\nNA\n\n\nAcal + O:Clb\nNA\n2.218\nNA\nNA\n1.493\n2.943\nNA\nNA\n1\nNA\n\n\nAcal + O:Clb + O\n1.967\nNA\n1.620\n2.314\nNA\nNA\nNA\nNA\n1\nNA\n\n\nAcal + O:FCR\nNA\n1.796\nNA\nNA\n1.100\n2.492\nNA\nNA\n1\nNA\n\n\nAcal + O:FCR + BR\nNA\n1.551\nNA\nNA\n0.929\n2.173\nNA\nNA\n1\nNA\n\n\nAcal + O:I\nNA\n0.346\nNA\nNA\n-0.286\n0.978\nNA\nNA\n1\nNA\n\n\nAcal + O:I + R\nNA\n0.890\nNA\nNA\n0.159\n1.621\nNA\nNA\n1\nNA\n\n\nAcal + O:Ibr + O\nNA\n0.581\nNA\nNA\n0.017\n1.145\nNA\nNA\n1\nNA\n\n\nAcal + O:Ibr + Ven\nNA\n0.657\nNA\nNA\n0.141\n1.173\nNA\nNA\n1\nNA\n\n\nAcal + O:Ven + O\nNA\n0.796\nNA\nNA\n0.303\n1.289\nNA\nNA\n1\nNA\n\n\nAcal + O:Ven + O + Ibr\nNA\n0.347\nNA\nNA\n-0.422\n1.116\nNA\nNA\n1\nNA\n\n\nAcal + O:Ven + R\nNA\n1.194\nNA\nNA\n0.552\n1.836\nNA\nNA\n1\nNA\n\n\nAcal + O:Zanubrutinib\nNA\n0.129\nNA\nNA\n-0.485\n0.743\nNA\nNA\n1\nNA\n\n\nBR:Acal\nNA\n-0.827\nNA\nNA\n-1.330\n-0.324\nNA\nNA\n1\nNA\n\n\nBR:Clb\nNA\n0.851\nNA\nNA\n0.349\n1.353\nNA\nNA\n1\nNA\n\n\nBR:Clb + O\n0.600\nNA\n0.208\n0.992\nNA\nNA\nNA\nNA\n1\nNA\n\n\nBR:FCR\nNA\n0.429\nNA\nNA\n-0.290\n1.148\nNA\nNA\n1\nNA\n\n\nBR:FCR + BR\nNA\n0.184\nNA\nNA\n-0.464\n0.832\nNA\nNA\n1\nNA\n\n\nBR:I\n-1.021\nNA\n-1.376\n-0.666\nNA\nNA\nNA\nNA\n1\nNA\n\n\nBR:I + R\nNA\n-0.477\nNA\nNA\n-1.230\n0.276\nNA\nNA\n1\nNA\n\n\nBR:Ibr + O\nNA\n-0.786\nNA\nNA\n-1.379\n-0.193\nNA\nNA\n1\nNA\n\n\nBR:Ibr + Ven\nNA\n-0.710\nNA\nNA\n-1.257\n-0.163\nNA\nNA\n1\nNA\n\n\nBR:Ven + O\nNA\n-0.571\nNA\nNA\n-1.097\n-0.045\nNA\nNA\n1\nNA\n\n\nBR:Ven + O + Ibr\nNA\n-1.020\nNA\nNA\n-1.810\n-0.230\nNA\nNA\n1\nNA\n\n\nBR:Ven + R\nNA\n-0.173\nNA\nNA\n-0.841\n0.495\nNA\nNA\n1\nNA\n\n\nBR:Zanubrutinib\n-1.238\nNA\n-1.559\n-0.917\nNA\nNA\nNA\nNA\n1\nNA\n\n\nClb + O:Acal\n-1.427\nNA\n-1.743\n-1.111\nNA\nNA\nNA\nNA\n1\nNA\n\n\nClb + O:FCR\nNA\n-0.171\nNA\nNA\n-0.774\n0.432\nNA\nNA\n1\nNA\n\n\nClb + O:FCR + BR\nNA\n-0.416\nNA\nNA\n-0.932\n0.100\nNA\nNA\n1\nNA\n\n\nClb + O:I\nNA\n-1.621\nNA\nNA\n-2.150\n-1.092\nNA\nNA\n1\nNA\n\n\nClb + O:I + R\nNA\n-1.077\nNA\nNA\n-1.720\n-0.434\nNA\nNA\n1\nNA\n\n\nClb + O:Ibr + O\n-1.386\nNA\n-1.831\n-0.941\nNA\nNA\nNA\nNA\n1\nNA\n\n\nClb + O:Ibr + Ven\n-1.310\nNA\n-1.692\n-0.928\nNA\nNA\nNA\nNA\n1\nNA\n\n\nClb + O:Ven + O\n-1.171\nNA\n-1.522\n-0.820\nNA\nNA\nNA\nNA\n1\nNA\n\n\nClb + O:Ven + O + Ibr\nNA\n-1.620\nNA\nNA\n-2.306\n-0.934\nNA\nNA\n1\nNA\n\n\nClb + O:Ven + R\nNA\n-0.773\nNA\nNA\n-1.313\n-0.233\nNA\nNA\n1\nNA\n\n\nClb + O:Zanubrutinib\nNA\n-1.838\nNA\nNA\n-2.345\n-1.331\nNA\nNA\n1\nNA\n\n\nClb:Acal\nNA\n-1.678\nNA\nNA\n-2.389\n-0.967\nNA\nNA\n1\nNA\n\n\nClb:Clb + O\nNA\n-0.251\nNA\nNA\n-0.888\n0.386\nNA\nNA\n1\nNA\n\n\nClb:FCR\nNA\n-0.422\nNA\nNA\n-1.299\n0.455\nNA\nNA\n1\nNA\n\n\nClb:FCR + BR\nNA\n-0.667\nNA\nNA\n-1.486\n0.152\nNA\nNA\n1\nNA\n\n\nClb:I\n-1.872\nNA\n-2.227\n-1.517\nNA\nNA\nNA\nNA\n1\nNA\n\n\nClb:I + R\nNA\n-1.328\nNA\nNA\n-2.233\n-0.423\nNA\nNA\n1\nNA\n\n\nClb:Ibr + O\nNA\n-1.637\nNA\nNA\n-2.414\n-0.860\nNA\nNA\n1\nNA\n\n\nClb:Ibr + Ven\nNA\n-1.561\nNA\nNA\n-2.304\n-0.818\nNA\nNA\n1\nNA\n\n\nClb:Ven + O\nNA\n-1.422\nNA\nNA\n-2.149\n-0.695\nNA\nNA\n1\nNA\n\n\nClb:Ven + O + Ibr\nNA\n-1.871\nNA\nNA\n-2.807\n-0.935\nNA\nNA\n1\nNA\n\n\nClb:Ven + R\nNA\n-1.024\nNA\nNA\n-1.859\n-0.189\nNA\nNA\n1\nNA\n\n\nClb:Zanubrutinib\nNA\n-2.089\nNA\nNA\n-2.685\n-1.493\nNA\nNA\n1\nNA\n\n\nFCR + BR:Acal\nNA\n-1.011\nNA\nNA\n-1.616\n-0.406\nNA\nNA\n1\nNA\n\n\nFCR + BR:I\nNA\n-1.205\nNA\nNA\n-1.944\n-0.466\nNA\nNA\n1\nNA\n\n\nFCR + BR:I + R\nNA\n-0.661\nNA\nNA\n-1.485\n0.163\nNA\nNA\n1\nNA\n\n\nFCR + BR:Ibr + O\nNA\n-0.970\nNA\nNA\n-1.651\n-0.289\nNA\nNA\n1\nNA\n\n\nFCR + BR:Ibr + Ven\nNA\n-0.894\nNA\nNA\n-1.536\n-0.252\nNA\nNA\n1\nNA\n\n\nFCR + BR:Ven + O\n-0.755\nNA\n-1.133\n-0.377\nNA\nNA\nNA\nNA\n1\nNA\n\n\nFCR + BR:Ven + O + Ibr\n-1.204\nNA\n-1.657\n-0.751\nNA\nNA\nNA\nNA\n1\nNA\n\n\nFCR + BR:Ven + R\n-0.357\nNA\n-0.518\n-0.196\nNA\nNA\nNA\nNA\n1\nNA\n\n\nFCR + BR:Zanubrutinib\nNA\n-1.422\nNA\nNA\n-2.145\n-0.699\nNA\nNA\n1\nNA\n\n\nFCR:Acal\nNA\n-1.256\nNA\nNA\n-1.937\n-0.575\nNA\nNA\n1\nNA\n\n\nFCR:FCR + BR\nNA\n-0.245\nNA\nNA\n-1.039\n0.549\nNA\nNA\n1\nNA\n\n\nFCR:I\nNA\n-1.450\nNA\nNA\n-2.252\n-0.648\nNA\nNA\n1\nNA\n\n\nFCR:I + R\n-0.906\nNA\n-1.129\n-0.683\nNA\nNA\nNA\nNA\n1\nNA\n\n\nFCR:Ibr + O\nNA\n-1.215\nNA\nNA\n-1.964\n-0.466\nNA\nNA\n1\nNA\n\n\nFCR:Ibr + Ven\n-1.139\nNA\n-1.605\n-0.673\nNA\nNA\nNA\nNA\n1\nNA\n\n\nFCR:Ven + O\nNA\n-1.000\nNA\nNA\n-1.698\n-0.302\nNA\nNA\n1\nNA\n\n\nFCR:Ven + O + Ibr\nNA\n-1.449\nNA\nNA\n-2.363\n-0.535\nNA\nNA\n1\nNA\n\n\nFCR:Ven + R\nNA\n-0.602\nNA\nNA\n-1.412\n0.208\nNA\nNA\n1\nNA\n\n\nFCR:Zanubrutinib\nNA\n-1.667\nNA\nNA\n-2.455\n-0.879\nNA\nNA\n1\nNA\n\n\nI + R:Acal\nNA\n-0.350\nNA\nNA\n-1.066\n0.366\nNA\nNA\n1\nNA\n\n\nI + R:Ibr + O\nNA\n-0.309\nNA\nNA\n-1.091\n0.473\nNA\nNA\n1\nNA\n\n\nI + R:Ibr + Ven\nNA\n-0.233\nNA\nNA\n-0.750\n0.284\nNA\nNA\n1\nNA\n\n\nI + R:Ven + O\nNA\n-0.094\nNA\nNA\n-0.827\n0.638\nNA\nNA\n1\nNA\n\n\nI + R:Ven + O + Ibr\nNA\n-0.543\nNA\nNA\n-1.484\n0.397\nNA\nNA\n1\nNA\n\n\nI + R:Ven + R\nNA\n0.304\nNA\nNA\n-0.536\n1.144\nNA\nNA\n1\nNA\n\n\nI + R:Zanubrutinib\nNA\n-0.761\nNA\nNA\n-1.580\n0.058\nNA\nNA\n1\nNA\n\n\nI:Acal\nNA\n0.194\nNA\nNA\n-0.422\n0.810\nNA\nNA\n1\nNA\n\n\nI:I + R\nNA\n0.544\nNA\nNA\n-0.288\n1.377\nNA\nNA\n1\nNA\n\n\nI:Ibr + O\nNA\n0.235\nNA\nNA\n-0.456\n0.926\nNA\nNA\n1\nNA\n\n\nI:Ibr + Ven\nNA\n0.311\nNA\nNA\n-0.341\n0.963\nNA\nNA\n1\nNA\n\n\nI:Ven + O\nNA\n0.450\nNA\nNA\n-0.185\n1.085\nNA\nNA\n1\nNA\n\n\nI:Ven + O + Ibr\nNA\n0.001\nNA\nNA\n-0.865\n0.867\nNA\nNA\n1\nNA\n\n\nI:Ven + R\nNA\n0.848\nNA\nNA\n0.092\n1.604\nNA\nNA\n1\nNA\n\n\nI:Zanubrutinib\nNA\n-0.217\nNA\nNA\n-0.696\n0.262\nNA\nNA\n1\nNA\n\n\nIbr + O:Acal\nNA\n-0.041\nNA\nNA\n-0.586\n0.504\nNA\nNA\n1\nNA\n\n\nIbr + O:Ibr + Ven\nNA\n0.076\nNA\nNA\n-0.511\n0.663\nNA\nNA\n1\nNA\n\n\nIbr + O:Ven + O\nNA\n0.215\nNA\nNA\n-0.352\n0.782\nNA\nNA\n1\nNA\n\n\nIbr + O:Ven + O + Ibr\nNA\n-0.234\nNA\nNA\n-1.052\n0.584\nNA\nNA\n1\nNA\n\n\nIbr + O:Ven + R\nNA\n0.613\nNA\nNA\n-0.087\n1.313\nNA\nNA\n1\nNA\n\n\nIbr + O:Zanubrutinib\nNA\n-0.452\nNA\nNA\n-1.126\n0.222\nNA\nNA\n1\nNA\n\n\nIbr + Ven:Acal\nNA\n-0.117\nNA\nNA\n-0.613\n0.379\nNA\nNA\n1\nNA\n\n\nIbr + Ven:Ven + O\nNA\n0.139\nNA\nNA\n-0.380\n0.658\nNA\nNA\n1\nNA\n\n\nIbr + Ven:Ven + O + Ibr\nNA\n-0.310\nNA\nNA\n-1.096\n0.476\nNA\nNA\n1\nNA\n\n\nIbr + Ven:Ven + R\nNA\n0.537\nNA\nNA\n-0.125\n1.199\nNA\nNA\n1\nNA\n\n\nIbr + Ven:Zanubrutinib\nNA\n-0.528\nNA\nNA\n-1.163\n0.107\nNA\nNA\n1\nNA\n\n\nVen + O + Ibr:Acal\nNA\n0.193\nNA\nNA\n-0.562\n0.948\nNA\nNA\n1\nNA\n\n\nVen + O + Ibr:Ven + R\nNA\n0.847\nNA\nNA\n0.367\n1.327\nNA\nNA\n1\nNA\n\n\nVen + O + Ibr:Zanubrutinib\nNA\n-0.218\nNA\nNA\n-1.071\n0.635\nNA\nNA\n1\nNA\n\n\nVen + O:Acal\nNA\n-0.256\nNA\nNA\n-0.728\n0.216\nNA\nNA\n1\nNA\n\n\nVen + O:Ven + O + Ibr\nNA\n-0.449\nNA\nNA\n-1.039\n0.141\nNA\nNA\n1\nNA\n\n\nVen + O:Ven + R\nNA\n0.398\nNA\nNA\n-0.013\n0.809\nNA\nNA\n1\nNA\n\n\nVen + O:Zanubrutinib\nNA\n-0.667\nNA\nNA\n-1.283\n-0.051\nNA\nNA\n1\nNA\n\n\nVen + R:Acal\nNA\n-0.654\nNA\nNA\n-1.280\n-0.028\nNA\nNA\n1\nNA\n\n\nVen + R:Zanubrutinib\nNA\n-1.065\nNA\nNA\n-1.806\n-0.324\nNA\nNA\n1\nNA\n\n\nZanubrutinib:Acal\nNA\n0.411\nNA\nNA\n-0.186\n1.008\nNA\nNA\n1\nNA"
+  },
+  {
+    "objectID": "inconsistency.html#global-inconsistency-design-by-treatment-decomposition",
+    "href": "inconsistency.html#global-inconsistency-design-by-treatment-decomposition",
+    "title": "Inconsistency",
+    "section": "Global inconsistency: design-by-treatment decomposition",
+    "text": "Global inconsistency: design-by-treatment decomposition\n\n\nCode\ndec &lt;- tryCatch(netmeta::decomp.design(nm), error = identity)\nif (inherits(dec, \"error\")) {\n  cat(\"Design-by-treatment decomposition failed:\", conditionMessage(dec))\n} else {\n  knitr::kable(round(dec$Q.decomp, 3))\n}\n\n\n\n\n\n\nQ\ndf\npval\n\n\n\n\nTotal\n0.584\n1\n0.445\n\n\nWithin designs\n0.584\n1\n0.445\n\n\nBetween designs\n0.000\n0\nNA"
+  },
+  {
+    "objectID": "interactive-node-merging.html",
+    "href": "interactive-node-merging.html",
+    "title": "Interactive Node Merging",
+    "section": "",
+    "text": "This page provides a browser-side node-merging module for the example CLL network. The user selects the treatment components to merge, gives the merged node a new name, chooses the CNMA model, and presses Run node merging. The code is hidden from the user; only the controls, network plot, and results are shown."
+  },
+  {
+    "objectID": "interactive-node-merging.html#select-components-to-merge",
+    "href": "interactive-node-merging.html#select-components-to-merge",
+    "title": "Interactive Node Merging",
+    "section": "Select components to merge",
+    "text": "Select components to merge\n\ncomponents_all = [\n  \"Acal\", \"BR\", \"Clb\", \"FCR\", \"I\", \"Ibr\", \"O\", \"R\", \"Ven\", \"Zanubrutinib\"\n]\n\nviewof components_to_merge = Inputs.checkbox(\n  components_all,\n  {\n    value: [\"Acal\", \"Zanubrutinib\"],\n    label: \"Components to merge\"\n  }\n)\n\nviewof new_node_name = Inputs.text({\n  value: \"SecondGenBTKi\",\n  label: \"New merged component name\"\n})\n\nviewof cnma_model = Inputs.radio(\n  [\"Additive\", \"Additive + Interaction\"],\n  {\n    value: \"Additive\",\n    label: \"CNMA model\"\n  }\n)\n\nviewof run_analysis = Inputs.button(\"Run node merging\")"
+  },
+  {
+    "objectID": "interactive-node-merging.html#validation-rules",
+    "href": "interactive-node-merging.html#validation-rules",
+    "title": "Interactive Node Merging",
+    "section": "Validation rules",
+    "text": "Validation rules\n\n\n\n\n\n\n\nRule\nBehaviour\n\n\n\n\nFewer than 2 components selected\nStop\n\n\nEmpty merged node name\nStop\n\n\nMerged node name identical to one of the selected components\nStop\n\n\nSelf-comparison created, e.g. A vs A\nStop\n\n\nA study becomes single-arm/non-comparative\nStop\n\n\nFewer than 3 treatment nodes remain\nStop\n\n\nNetwork becomes disconnected\nWarning, but the analysis is allowed to continue\n\n\nDuplicate comparisons are created within the same study\nPool using inverse-variance weights"
+  },
+  {
+    "objectID": "interactive-node-merging.html#network-plot-after-merging",
+    "href": "interactive-node-merging.html#network-plot-after-merging",
+    "title": "Interactive Node Merging",
+    "section": "Network plot after merging",
+    "text": "Network plot after merging"
+  },
+  {
+    "objectID": "interactive-node-merging.html#nma-summary-after-merging",
+    "href": "interactive-node-merging.html#nma-summary-after-merging",
+    "title": "Interactive Node Merging",
+    "section": "NMA summary after merging",
+    "text": "NMA summary after merging"
+  },
+  {
+    "objectID": "interactive-node-merging.html#notes-for-thesis-interpretation",
+    "href": "interactive-node-merging.html#notes-for-thesis-interpretation",
+    "title": "Interactive Node Merging",
+    "section": "Notes for thesis interpretation",
+    "text": "Notes for thesis interpretation\nThis is a client-side sensitivity module. It allows users to perform controlled node merging on the embedded example dataset, but it does not save choices to a database and does not create a permanent version history. For a full Living NMA platform with uploaded datasets, persistent versions, and user sessions, the Shiny/server version remains the correct production architecture."
+  },
+  {
+    "objectID": "live-demo.html",
+    "href": "live-demo.html",
+    "title": "Live Demo Roadmap",
+    "section": "",
+    "text": "This page is reserved for the browser-side version of selected modules.\nThe safest development order is:"
+  },
+  {
+    "objectID": "live-demo.html#minimal-test-code-for-quarto-livewebr",
+    "href": "live-demo.html#minimal-test-code-for-quarto-livewebr",
+    "title": "Live Demo Roadmap",
+    "section": "Minimal test code for quarto-live/webR",
+    "text": "Minimal test code for quarto-live/webR\nUse this only after adding the quarto-live extension to the project.\ninstall.packages(\"netmeta\")\nlibrary(netmeta)\n\nexample_dat &lt;- data.frame(\n  studlab = c(\"S1\", \"S2\", \"S3\"),\n  treat1 = c(\"A\", \"B\", \"A\"),\n  treat2 = c(\"B\", \"C\", \"C\"),\n  TE = c(0.20, -0.10, 0.05),\n  seTE = c(0.12, 0.15, 0.10)\n)\n\nnet &lt;- netmeta(\n  TE = TE,\n  seTE = seTE,\n  treat1 = treat1,\n  treat2 = treat2,\n  studlab = studlab,\n  data = example_dat,\n  sm = \"HR\",\n  random = TRUE\n)\n\nsummary(net)\nIf this works in the browser, then the node-merging demo can be made genuinely live. If it fails, use precomputed node-merging scenarios in the static Quarto website."
+  },
+  {
+    "objectID": "node-merging.html",
+    "href": "node-merging.html",
+    "title": "Node Merging",
+    "section": "",
+    "text": "Code\nsource(\"R/nma_functions.R\")\nsource(\"R/node_merging.R\")\ndat &lt;- load_pairwise_data()\nNode merging is implemented by replacing selected treatment components inside labels such as I + R or Clb + O, then pooling duplicate comparisons within the same study using inverse-variance weights."
+  },
+  {
+    "objectID": "node-merging.html#available-components",
+    "href": "node-merging.html#available-components",
+    "title": "Node Merging",
+    "section": "Available components",
+    "text": "Available components\n\n\nCode\nknitr::kable(data.frame(component = extract_components(dat)))\n\n\n\n\n\ncomponent\n\n\n\n\nAcal\n\n\nBR\n\n\nClb\n\n\nFCR\n\n\nI\n\n\nIbr\n\n\nO\n\n\nR\n\n\nVen\n\n\nZanubrutinib"
+  },
+  {
+    "objectID": "node-merging.html#example-scenario",
+    "href": "node-merging.html#example-scenario",
+    "title": "Node Merging",
+    "section": "Example scenario",
+    "text": "Example scenario\nThe example below merges the components I and Ibr into a common node named BTKi.\n\n\nCode\nmerged_dat &lt;- merge_components(\n  dat,\n  components = c(\"I\", \"Ibr\"),\n  new_name = \"BTKi\",\n  stop_on_self_loop = TRUE\n)\n\nknitr::kable(merged_dat)\n\n\n\n\n\nstudy\ntreat1\ntreat2\nlogHR\nselogHR\n\n\n\n\nstudy 1\nBR\nBTKi\n-1.021\n0.181\n\n\nstudy 10\nAcal\nClb + O\n1.427\n0.161\n\n\nstudy 11\nBR\nZanubrutinib\n-1.238\n0.164\n\n\nstudy 12\nFCR + BR\nVen + O\n-0.755\n0.193\n\n\nstudy 13\nFCR + BR\nVen + O + BTKi\n-1.204\n0.231\n\n\nstudy 14\nFCR + BR\nVen + R\n-0.357\n0.082\n\n\nstudy 15\nBR\nClb + O\n0.600\n0.200\n\n\nstudy 2\nBTKi + R\nFCR\n0.994\n0.162\n\n\nstudy 3\nBTKi + R\nFCR\n0.820\n0.160\n\n\nstudy 4\nBTKi + Ven\nFCR\n1.139\n0.238\n\n\nstudy 5\nBTKi + Ven\nClb + O\n1.310\n0.195\n\n\nstudy 6\nClb + O\nVen + O\n-1.171\n0.179\n\n\nstudy 7\nBTKi + O\nClb + O\n1.386\n0.227\n\n\nstudy 8\nBTKi\nClb\n1.872\n0.181\n\n\nstudy 9\nAcal + O\nClb + O\n1.967\n0.177"
+  },
+  {
+    "objectID": "node-merging.html#re-run-nma-after-merging",
+    "href": "node-merging.html#re-run-nma-after-merging",
+    "title": "Node Merging",
+    "section": "Re-run NMA after merging",
+    "text": "Re-run NMA after merging\n\n\nCode\nnm_merged &lt;- run_model(merged_dat, model_type = \"simple\", effect_model = \"random\")\nnetmeta::netgraph(\n  nm_merged,\n  number.of.studies = TRUE,\n  thickness = \"number.of.studies\",\n  multiarm = TRUE,\n  points = TRUE,\n  cex.points = 4,\n  cex = 0.8,\n  plastic = FALSE,\n  seq = sort(nm_merged$trts)\n)\n\n\n\n\n\n\n\n\n\n\n\nCode\nsummary(nm_merged, backtransf = TRUE)\n\n\nOriginal data:\n\n             treat1         treat2      TE   seTE\nstudy 1          BR           BTKi -1.0210 0.1810\nstudy 10       Acal        Clb + O  1.4270 0.1610\nstudy 11         BR   Zanubrutinib -1.2380 0.1640\nstudy 12   FCR + BR        Ven + O -0.7550 0.1930\nstudy 13   FCR + BR Ven + O + BTKi -1.2040 0.2310\nstudy 14   FCR + BR        Ven + R -0.3570 0.0820\nstudy 15         BR        Clb + O  0.6000 0.2000\nstudy 2    BTKi + R            FCR  0.9940 0.1620\nstudy 3    BTKi + R            FCR  0.8200 0.1600\nstudy 4  BTKi + Ven            FCR  1.1390 0.2380\nstudy 5  BTKi + Ven        Clb + O  1.3100 0.1950\nstudy 6     Clb + O        Ven + O -1.1710 0.1790\nstudy 7    BTKi + O        Clb + O  1.3860 0.2270\nstudy 8        BTKi            Clb  1.8720 0.1810\nstudy 9    Acal + O        Clb + O  1.9670 0.1770\n\nNumber of treatment arms (by study):\n         narms\nstudy 1      2\nstudy 10     2\nstudy 11     2\nstudy 12     2\nstudy 13     2\nstudy 14     2\nstudy 15     2\nstudy 2      2\nstudy 3      2\nstudy 4      2\nstudy 5      2\nstudy 6      2\nstudy 7      2\nstudy 8      2\nstudy 9      2\n\nResults (common effects model):\n\n             treat1         treat2     HR            95%-CI    Q leverage\nstudy 1          BR           BTKi 0.3602 [0.2526;  0.5136] 0.00     1.00\nstudy 10       Acal        Clb + O 4.1662 [3.0387;  5.7119] 0.00     1.00\nstudy 11         BR   Zanubrutinib 0.2900 [0.2103;  0.3999] 0.00     1.00\nstudy 12   FCR + BR        Ven + O 0.4700 [0.3220;  0.6861] 0.00     1.00\nstudy 13   FCR + BR Ven + O + BTKi 0.3000 [0.1908;  0.4718] 0.00     1.00\nstudy 14   FCR + BR        Ven + R 0.6998 [0.5959;  0.8218] 0.00     1.00\nstudy 15         BR        Clb + O 1.8221 [1.2312;  2.6966] 0.00     1.00\nstudy 2    BTKi + R            FCR 2.4742 [1.9794;  3.0927] 0.30     0.49\nstudy 3    BTKi + R            FCR 2.4742 [1.9794;  3.0927] 0.29     0.51\nstudy 4  BTKi + Ven            FCR 3.1236 [1.9592;  4.9802] 0.00     1.00\nstudy 5  BTKi + Ven        Clb + O 3.7062 [2.5290;  5.4314] 0.00     1.00\nstudy 6     Clb + O        Ven + O 0.3101 [0.2183;  0.4404] 0.00     1.00\nstudy 7    BTKi + O        Clb + O 3.9988 [2.5628;  6.2396] 0.00     1.00\nstudy 8        BTKi            Clb 6.5013 [4.5597;  9.2697] 0.00     1.00\nstudy 9    Acal + O        Clb + O 7.1492 [5.0535; 10.1139] 0.00     1.00\n\nResults (random effects model):\n\n             treat1         treat2     HR            95%-CI\nstudy 1          BR           BTKi 0.3602 [0.2526;  0.5136]\nstudy 10       Acal        Clb + O 4.1662 [3.0387;  5.7119]\nstudy 11         BR   Zanubrutinib 0.2900 [0.2103;  0.3999]\nstudy 12   FCR + BR        Ven + O 0.4700 [0.3220;  0.6861]\nstudy 13   FCR + BR Ven + O + BTKi 0.3000 [0.1908;  0.4718]\nstudy 14   FCR + BR        Ven + R 0.6998 [0.5959;  0.8218]\nstudy 15         BR        Clb + O 1.8221 [1.2312;  2.6966]\nstudy 2    BTKi + R            FCR 2.4742 [1.9794;  3.0927]\nstudy 3    BTKi + R            FCR 2.4742 [1.9794;  3.0927]\nstudy 4  BTKi + Ven            FCR 3.1236 [1.9592;  4.9802]\nstudy 5  BTKi + Ven        Clb + O 3.7062 [2.5290;  5.4314]\nstudy 6     Clb + O        Ven + O 0.3101 [0.2183;  0.4404]\nstudy 7    BTKi + O        Clb + O 3.9988 [2.5628;  6.2396]\nstudy 8        BTKi            Clb 6.5013 [4.5597;  9.2697]\nstudy 9    Acal + O        Clb + O 7.1492 [5.0535; 10.1139]\n\nNumber of studies: k = 15\nNumber of pairwise comparisons: m = 15\nNumber of treatments: n = 15\nNumber of designs: d = 14\n\nCommon effects model\n\nTreatment estimate (sm = 'HR', comparison: other treatments vs 'Acal'):\n                   HR           95%-CI     z  p-value\nAcal                .                .     .        .\nAcal + O       1.7160 [1.0736; 2.7427]  2.26   0.0240\nBR             0.4374 [0.2644; 0.7234] -3.22   0.0013\nBTKi           1.2141 [0.6559; 2.2472]  0.62   0.5369\nBTKi + O       0.9598 [0.5563; 1.6561] -0.15   0.8829\nBTKi + R       0.7046 [0.3443; 1.4422] -0.96   0.3381\nBTKi + Ven     0.8896 [0.5419; 1.4603] -0.46   0.6436\nClb            0.1867 [0.0918; 0.3801] -4.63 &lt; 0.0001\nClb + O        0.2400 [0.1751; 0.3291] -8.86 &lt; 0.0001\nFCR            0.2848 [0.1442; 0.5625] -3.62   0.0003\nFCR + BR       0.3639 [0.1987; 0.6662] -3.28   0.0011\nVen + O        0.7741 [0.4829; 1.2409] -1.06   0.2876\nVen + O + BTKi 1.2129 [0.5698; 2.5818]  0.50   0.6166\nVen + R        0.5200 [0.2781; 0.9722] -2.05   0.0405\nZanubrutinib   1.5083 [0.8302; 2.7404]  1.35   0.1773\n\nRandom effects model\n\nTreatment estimate (sm = 'HR', comparison: other treatments vs 'Acal'):\n                   HR           95%-CI     z  p-value\nAcal                .                .     .        .\nAcal + O       1.7160 [1.0736; 2.7427]  2.26   0.0240\nBR             0.4374 [0.2644; 0.7234] -3.22   0.0013\nBTKi           1.2141 [0.6559; 2.2472]  0.62   0.5369\nBTKi + O       0.9598 [0.5563; 1.6561] -0.15   0.8829\nBTKi + R       0.7046 [0.3443; 1.4422] -0.96   0.3381\nBTKi + Ven     0.8896 [0.5419; 1.4603] -0.46   0.6436\nClb            0.1867 [0.0918; 0.3801] -4.63 &lt; 0.0001\nClb + O        0.2400 [0.1751; 0.3291] -8.86 &lt; 0.0001\nFCR            0.2848 [0.1442; 0.5625] -3.62   0.0003\nFCR + BR       0.3639 [0.1987; 0.6662] -3.28   0.0011\nVen + O        0.7741 [0.4829; 1.2409] -1.06   0.2876\nVen + O + BTKi 1.2129 [0.5698; 2.5818]  0.50   0.6166\nVen + R        0.5200 [0.2781; 0.9722] -2.05   0.0405\nZanubrutinib   1.5083 [0.8302; 2.7404]  1.35   0.1773\n\nQuantifying heterogeneity / inconsistency:\ntau^2 = 0; tau = 0; I^2 = 0%\n\nTests of heterogeneity (within designs) and inconsistency (between designs):\n                   Q d.f. p-value\nTotal           0.58    1  0.4448\nWithin designs  0.58    1  0.4448\nBetween designs 0.00    0      --\n\nDetails of network meta-analysis methods:\n- Frequentist graph-theoretical approach\n- DerSimonian-Laird estimator for tau^2\n- Calculation of I^2 based on Q"
+  }
+]

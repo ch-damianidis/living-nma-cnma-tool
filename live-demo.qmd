@@ -1,0 +1,45 @@
+---
+title: "Live Demo Roadmap"
+---
+
+This page is reserved for the browser-side version of selected modules.
+
+The safest development order is:
+
+1. Test whether `netmeta` installs and loads in `webR`.
+2. Test a minimal `netmeta()` example with three treatments.
+3. Add the existing CLL pairwise dataset as a small CSV or inline `data.frame`.
+4. Add browser-side node merging.
+5. Re-run a simple NMA after merging.
+
+## Minimal test code for quarto-live/webR
+
+Use this only after adding the `quarto-live` extension to the project.
+
+```r
+install.packages("netmeta")
+library(netmeta)
+
+example_dat <- data.frame(
+  studlab = c("S1", "S2", "S3"),
+  treat1 = c("A", "B", "A"),
+  treat2 = c("B", "C", "C"),
+  TE = c(0.20, -0.10, 0.05),
+  seTE = c(0.12, 0.15, 0.10)
+)
+
+net <- netmeta(
+  TE = TE,
+  seTE = seTE,
+  treat1 = treat1,
+  treat2 = treat2,
+  studlab = studlab,
+  data = example_dat,
+  sm = "HR",
+  random = TRUE
+)
+
+summary(net)
+```
+
+If this works in the browser, then the node-merging demo can be made genuinely live. If it fails, use precomputed node-merging scenarios in the static Quarto website.

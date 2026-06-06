@@ -1,0 +1,20 @@
+---
+title: "Treatment Ranking"
+---
+
+```{r}
+source("R/nma_functions.R")
+dat <- load_pairwise_data()
+nm <- run_model(dat, model_type = "simple", effect_model = "random")
+```
+
+## P-score ranking
+
+```{r}
+ranking <- tryCatch(extract_ranking(nm, effect_model = "random"), error = identity)
+if (inherits(ranking, "error")) {
+  cat("Ranking failed:", conditionMessage(ranking))
+} else {
+  knitr::kable(ranking)
+}
+```
