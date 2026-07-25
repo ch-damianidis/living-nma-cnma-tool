@@ -1,164 +1,162 @@
 # Living Network Meta-Analysis Quarto Website
 
-This repository contains a reproducible Quarto-based research website for **Living Network Meta-Analysis (Living NMA)**. It was developed as an extension and upgrade of my MSc thesis project, originally implemented as a Shiny prototype under the title:
+[![R](https://img.shields.io/badge/R-%3E%3D4.0-blue.svg)](https://www.r-project.org/)
+[![Quarto](https://img.shields.io/badge/Quarto-Website-blue.svg)](https://quarto.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Development of a Tool for Living Network Meta-Analysis**
+Μια επαναγώγιμη Quarto-based ερευνητική ιστοσελίδα για "Living Network Meta-Analysis (Living NMA)" — μεταφορά και επέκταση της αρχικής Shiny prototype ώστε να δημιουργηθεί ένα δημοσιεύσιμο, τεκμηριωμένο και στατικό documentation/interactive prototype.
 
-The aim of this version is to transform the original Shiny application into a more transparent, reproducible, and publishable static research website, while preserving selected interactive functionality through browser-side computation.
+---
 
-## Project overview
+## Περιεχόμενο (σύντομη περιγραφή)
 
-This project provides a blueprint for presenting and exploring a Living NMA workflow in a static web environment. It combines:
+Αυτό το αποθετήριο παρουσιάζει ένα πλήρες workflow για Living NMA. Συνδυάζει:
 
-* static Quarto pages for methodology, data structure, analysis, inconsistency assessment, ranking, and limitations;
-* reusable R functions for the main analysis pipeline;
-* pre-rendered outputs suitable for GitHub Pages;
-* an interactive browser-side node-merging module using `quarto-live` and webR/WebAssembly.
+- Στατικές Quarto σελίδες (.qmd) για τεκμηρίωση της μεθοδολογίας, δεδομένων, ανάλυσης, και περιορισμών
+- Επαναχρησιμοποιήσιμες R συναρτήσεις στο φάκελο `R/` που υλοποιούν την κύρια ανάλυση (NMA/CNMA)
+- Μικρό παράδειγμα dataset (`data/cll_pairwise_data.csv`) για demo
+- Client-side interactive module για node-merging με `quarto-live` + webR (WebAssembly)
 
-The website is intended as a research prototype rather than a full production platform. It demonstrates how a Living NMA workflow can be documented, reproduced, and partially interacted with through a static website.
+Αυτή η έκδοση στοχεύει σε reproducibility και δημοσιεύσιμη παρουσίαση περισσότερων αποτελεσμάτων από ό,τι η αρχική Shiny app, ενώ διατηρεί επιλεγμένα interactive features στο browser.
 
-## Main functionality
+---
 
-The website includes the following components:
+## Features
 
-* data overview for the example CLL network;
-* standard Network Meta-Analysis using `netmeta`;
-* network plots and summary outputs;
-* node merging logic for treatment components;
-* browser-side interactive node merging;
-* additive and additive-plus-interaction CNMA options in the interactive layer;
-* treatment ranking;
-* local inconsistency assessment using node-splitting;
-* global inconsistency assessment using design-by-treatment decomposition;
-* methodological notes and limitations.
+- Classical NMA (netmeta)
+- Component NMA (CNMA): additive και interaction επιλογές
+- Node-merging (browser-side) με validation (αποφυγή self-loops, single-arm detection)
+- Inconsistency diagnostics: node-splitting (local), design-by-treatment (global)
+- Treatment ranking (P-scores)
+- Static site rendering στο `docs/` (έτοιμο για GitHub Pages)
 
-## Interactive node merging
+---
 
-The page `interactive-node-merging.qmd` provides an interactive browser-side module. The user can:
-
-1. select treatment components to merge;
-2. provide a new merged component name;
-3. choose between an additive and an additive-plus-interaction CNMA option;
-4. run the node-merging analysis directly in the browser;
-5. inspect the resulting network plot and model summary.
-
-The module includes validation rules to prevent invalid merges, including self-comparisons, non-comparative studies, empty merged names, and networks with too few treatment nodes. If the merged network becomes disconnected, the module displays an `igraph` network representation instead of a standard `netmeta` network plot.
-
-## Important note on first loading time
-
-The interactive module uses `quarto-live`, webR, and WebAssembly to run R code inside the browser. Therefore, the first time the interactive page is opened, the browser may need some time to download and initialize R and the required packages, including `dplyr`, `netmeta`, `meta`, and `igraph`.
-
-The first loading may take a few minutes depending on the user's internet connection and browser cache. This is expected behaviour. Subsequent visits are usually faster because some files may be cached by the browser.
-
-## Static website versus Shiny app
-
-The original Shiny prototype was designed as a more application-like tool with reactive behaviour. This Quarto version follows a different architecture:
-
-* the core analysis is decomposed into reusable R functions;
-* Quarto pages call these functions to produce reproducible outputs;
-* the rendered website can be hosted as a static site;
-* selected interactive features are implemented client-side through webR.
-
-This means that the Quarto website does not require a Shiny server. However, it also means that some production-level features are intentionally not included, such as:
-
-* user accounts;
-* persistent version history;
-* database-backed Living NMA updates;
-* permanent storage of user choices;
-* uploaded datasets saved on the server;
-* collaborative editing.
-
-For a full production Living NMA platform, a Shiny/server or other backend-based architecture would still be required.
-
-## Repository structure
+## Project structure
 
 ```text
 .
-├── _quarto.yml
-├── index.qmd
-├── methodology.qmd
-├── data.qmd
-├── analysis.qmd
-├── node-merging.qmd
-├── interactive-node-merging.qmd
+├── _quarto.yml                # Quarto config (navbar, render -> docs/)
+├── index.qmd                  # Home
+├── methodology.qmd            # Μεθοδολογία
+├── data.qmd                   # Περιγραφή δεδομένων
+├── analysis.qmd               # Ανάλυση που χρησιμοποιεί R/ functions
+├── node-merging.qmd           # Περιγραφή node-merging λογικής
+├── interactive-node-merging.qmd # Διαδραστική σελίδα (quarto-live + webR)
 ├── inconsistency.qmd
 ├── ranking.qmd
 ├── limitations.qmd
-├── R/
-├── data/
-├── docs/
-├── _extensions/
-└── original_shiny/
+├── R/                         # Επαναχρησιμοποιήσιμες R συναρτήσεις
+│   ├── nma_functions.R
+│   └── node_merging.R
+├── data/                      # Παράδειγμα δεδομένων (cll_pairwise_data.csv)
+├── docs/                      # Rendered site (output)
+├── _extensions/               # Quarto extensions (πχ quarto-live)
+└── original_shiny/            # Αρχικός Shiny prototype για αναφορά
+```
 ```
 
-## Render locally
+Πώς ταιριάζουν: οι `.qmd` σελίδες καλούν τις R συναρτήσεις για να παράξουν plots, πίνακες και αποτελέσματα. Η interactive σελίδα τρέχει μέρος της λογικής client-side με webR ώστε να επιτρέπει node-merging χωρίς server.
 
-To render the full website locally, run:
+---
 
-```bash
-quarto render
-```
+## Requirements
 
-The rendered static website is created in:
+- R ≥ 4.0
+- Quarto
+- Browser σύγχρονος (για interactive page)
 
-```text
-docs/
-```
+Σημαντικά R packages: netmeta, igraph, dplyr, quarto, (webR assets μέσω quarto-live)
 
-To preview the website locally, use:
+---
 
-```bash
-quarto preview
-```
+## Render τοπικά
 
-The live interactive page should be tested through `quarto preview` or after deployment to GitHub Pages. Opening the rendered HTML directly through a `file://` path may cause browser-side JavaScript or OJS components not to work correctly.
-
-## Quarto Live extension
-
-The interactive module depends on the Quarto Live extension. If the extension is not already installed in the project, run:
+Εγκατάσταση extension (μία φορά):
 
 ```bash
 quarto add r-wasm/quarto-live
 ```
 
-Then render either the full website:
+Render ολοκλήρου του site:
 
 ```bash
 quarto render
 ```
 
-or only the interactive page:
+Preview (για δοκιμή της interactive σελίδας):
 
 ```bash
-quarto render interactive-node-merging.qmd
+quarto preview
 ```
 
-## GitHub Pages deployment
+Το rendered site παράγεται στο `docs/` και είναι σχεδιασμένο για GitHub Pages (Branch: main, Folder: /docs).
 
-This project is designed to be deployed through GitHub Pages using the rendered `docs/` folder.
+---
 
-Recommended GitHub Pages settings:
+## Data format
 
-```text
-Source: Deploy from a branch
-Branch: main
-Folder: /docs
+Το παράδειγμα χρησιμοποιεί contrast-level pairwise δεδομένα με στήλες:
+
+- `study` (character)
+- `treat1` (character)
+- `treat2` (character)
+- `logHR` (numeric)
+- `selogHR` (numeric)
+
+Για combination treatments χρησιμοποιείται ` + ` ως διαχωριστής (π.χ. `Drug A + Drug B`).
+
+---
+
+## Analysis models
+
+- Simple NMA: `netmeta()`
+- Additive CNMA: `netcomb()` με `sep.trts = " + "`
+- Interaction CNMA: custom C-matrix (2-way interactions) μέσω `combn()` + `createC()`
+- Disconnected networks: fallback σε `discomb()` (additive only)
+
+---
+
+## Node merging (interactive)
+
+Το interactive module επιτρέπει:
+
+1. Επιλογή components για συγχώνευση
+2. Εισαγωγή νέου ονόματος κόμβου
+3. Επιλογή additive / additive+interaction CNMA
+4. Εκτέλεση της ανάλυσης στο browser (webR)
+
+Η συγχώνευση αντικαθιστά component labels, ενοποιεί συγκρίσεις με inverse-variance pooling, και αποτρέπει self-loops. Single-arm studies μετά τη συγχώνευση επισημαίνονται.
+
+---
+
+## Testing
+
+Προσθήκη unit tests για κρίσιμες συναρτήσεις (`merge_components`, `run_model`) προτείνεται. Τα υπάρχοντα scripts στο `R/` έχουν βασικούς ελέγχους για required columns.
+
+---
+
+## Contributing
+
+Fork → feature branch → PR. Παρακαλώ συμπεριλάβετε tests και ενημερωμένο documentation.
+
+---
+
+## Citation
+
+```
+Damianidis, C. (2026). Living Network Meta-Analysis Quarto Website: reproducible workflows and interactive node-merging. MSc Thesis / Technical Report.
 ```
 
-The `.nojekyll` file is included so that GitHub Pages serves the Quarto-generated files correctly.
+---
 
-## Original Shiny prototype
+## License
 
-The original Shiny code is preserved in:
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
-```text
-original_shiny/
-```
+---
 
-This folder is kept for reference and to document the development path from the initial Shiny prototype to the Quarto-based reproducible website.
+## Contact
 
-## Status
+Charalampos Damianidis — charalampos.damianidis@gmail.com
 
-This repository should be viewed as a research prototype and methodological blueprint. It demonstrates how a Living Network Meta-Analysis workflow can be presented as a reproducible static research website with selected browser-side interactive functionality.
-
-It is not intended to replace a full server-based Living NMA platform, but it provides a strong foundation for future development.
