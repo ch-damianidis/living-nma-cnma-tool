@@ -6,6 +6,8 @@
 
 A reproducible Quarto-based research website for "Living Network Meta-Analysis (Living NMA)". This repository adapts and extends an original Shiny prototype into a transparent, reproducible, and publishable static website while preserving selected interactive functionality via client-side R (webR).
 
+This work is based on the MSc thesis "Development of a Shiny Tool for Living Network Meta-Analysis, Demonstrated in Chronic Lymphocytic Leukaemia" (Damianidis, 2026).
+
 ---
 
 ## Overview
@@ -155,7 +157,7 @@ Contributions welcome. Suggested workflow:
 
 If you use this work in research, please cite:
 
-Damianidis, C. (2026). Living Network Meta-Analysis Tool: reproducible workflows and interactive node-merging. MSc Thesis / Technical Report.
+Damianidis, C. (2026). Development of a Shiny Tool for Living Network Meta-Analysis, Demonstrated in Chronic Lymphocytic Leukaemia. MSc Thesis, Aristotle University of Thessaloniki.
 
 ---
 
