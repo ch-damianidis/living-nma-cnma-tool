@@ -2,9 +2,26 @@
 .RData
 .Ruserdata
 .Rproj.user/
+.Rbuildignore
+.Renviron
+.Renviron.local
+
+# Quarto / caches
 .quarto/
+_cache/
+_cache_quarto/
+*.utf8.md
+
+# renv (if used)
 renv/library/
 renv/staging/
+
+# OS / editor
 .DS_Store
 Thumbs.db
-/.quarto/
+
+# Python / Jupyter (if present)
+.ipynb_checkpoints/
+
+# Logs / temp
+*.log
