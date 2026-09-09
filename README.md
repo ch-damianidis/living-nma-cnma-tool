@@ -8,7 +8,7 @@ A reproducible Quarto-based research website for "Living Network Meta-Analysis (
 
 This work is based on the MSc thesis "Development of a Shiny Tool for Living Network Meta-Analysis, Demonstrated in Chronic Lymphocytic Leukaemia" (Damianidis, 2026).
 
-[Visit the website](https://github.com/)
+[Visit the website]([https://github.com/](https://ch-damianidis.github.io/living-nma-cnma-tool/))
 ---
 
 ## Overview
